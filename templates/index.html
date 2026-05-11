@@ -251,12 +251,12 @@ body{font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:
 .sc-table-wrap{overflow-x:auto;padding:0}
 .sc-table{width:100%;border-collapse:collapse;font-size:13px}
 .sc-table th{
-  padding:10px 14px;text-align:left;font-size:11px;font-weight:600;
+  padding:6px 10px;text-align:left;font-size:11px;font-weight:600;
   text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);
   border-bottom:1px solid var(--border);border-right:1px solid var(--border2);
   background:var(--white);white-space:nowrap;
 }
-.sc-table th:first-child{min-width:200px;border-right:1px solid var(--border)}
+.sc-table th:first-child{min-width:160px;max-width:220px;border-right:1px solid var(--border)}
 .sc-table th.col-actuals{color:var(--text2)}
 .sc-table.view-monthly .col-weekly{display:none}
 .sc-table.view-weekly .col-monthly-only{display:none}
@@ -265,29 +265,29 @@ body{font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:
   padding:0;border-bottom:1px solid var(--border2);
   border-right:1px solid var(--border2);vertical-align:middle;
 }
-.sc-table td:first-child{border-right:1px solid var(--border)}
+.sc-table td:first-child{border-right:1px solid var(--border);max-width:220px}
 .sc-table tr:last-child td{border-bottom:none}
 .sc-table tr:hover td{background:#fafafa}
 
 /* Section header row */
 .sc-section-row td{
-  padding:8px 14px;background:var(--bg);border-top:1px solid var(--border);
+  padding:5px 10px;background:var(--bg);border-top:1px solid var(--border);
   border-bottom:1px solid var(--border);
 }
 .sc-section-label{
-  display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;
   color:var(--text2);cursor:pointer;user-select:none;
 }
-.sc-section-label svg{width:12px;height:12px;color:var(--muted);transition:transform 0.15s}
+.sc-section-label svg{width:11px;height:11px;color:var(--muted);transition:transform 0.15s}
 .sc-section-label.collapsed svg{transform:rotate(-90deg)}
 .sc-section-count{color:var(--muted);font-weight:400}
 
 /* Metric row */
 .metric-name-cell{
-  display:flex;align-items:center;gap:8px;padding:10px 14px;
+  display:flex;align-items:center;gap:6px;padding:5px 10px;
 }
 .owner-avatar{
-  width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:700;
+  width:18px;height:18px;border-radius:50%;font-size:8px;font-weight:700;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
 .owner-dc{background:#dbeafe;color:#1e40af}
@@ -303,7 +303,7 @@ tr:hover .metric-icon-btn{opacity:1}
 
 /* Editable value cells */
 .sc-cell{
-  padding:10px 14px;text-align:right;cursor:pointer;min-width:90px;
+  padding:6px 10px;text-align:right;cursor:pointer;min-width:70px;
   font-size:13px;font-weight:500;position:relative;
 }
 .sc-cell:hover{background:#f9fafb}
