@@ -248,6 +248,9 @@ body{font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:
 }
 .sc-table th:first-child{min-width:200px;border-right:1px solid var(--border)}
 .sc-table th.col-actuals{color:var(--text2)}
+.sc-table.view-monthly .col-weekly{display:none}
+.sc-table.view-weekly .col-monthly-only{display:none}
+.sc-table.view-daily .col-monthly-only{display:none}
 .sc-table td{
   padding:0;border-bottom:1px solid var(--border2);
   border-right:1px solid var(--border2);vertical-align:middle;
@@ -742,9 +745,9 @@ textarea{resize:vertical;min-height:60px}
           <button class="sc-nav-btn">&#8594;</button>
           <button class="sc-today">TODAY</button>
           <div class="sc-tabs">
-            <button class="sc-tab" onclick="setSCView('monthly',this)">MONTHLY</button>
-            <button class="sc-tab active" onclick="setSCView('weekly',this)">WEEKLY</button>
-            <button class="sc-tab" onclick="setSCView('daily',this)">DAILY</button>
+            <button class="sc-tab" onclick="setSCView('monthly',this,'leadership')">MONTHLY</button>
+            <button class="sc-tab active" onclick="setSCView('weekly',this,'leadership')">WEEKLY</button>
+            <button class="sc-tab" onclick="setSCView('daily',this,'leadership')">DAILY</button>
           </div>
           <div class="sc-toggle">
             <div class="toggle-switch"><div class="toggle-knob"></div></div>
@@ -764,17 +767,17 @@ textarea{resize:vertical;min-height:60px}
           </div>
         </div>
         <div class="sc-table-wrap">
-          <table class="sc-table">
+          <table class="sc-table view-weekly" id="sc-table-leadership">
             <thead>
               <tr>
                 <th>METRIC</th>
-                <th class="col-actuals">APR 2026<br><span style="font-weight:400;color:var(--muted)">ACTUALS</span></th>
+                <th class="col-actuals col-monthly-only">APR 2026<br><span style="font-weight:400;color:var(--muted)">ACTUALS</span></th>
                 <th>APR 2026<br><span style="font-weight:400">GOALS</span></th>
-                <th>W18<br><span style="font-weight:400">MAY 1–3</span></th>
-                <th>W19<br><span style="font-weight:400">MAY 4–10</span></th>
-                <th>W20<br><span style="font-weight:400">MAY 11–17</span></th>
-                <th>W21<br><span style="font-weight:400">MAY 18–24</span></th>
-                <th>W22<br><span style="font-weight:400">MAY 25–31</span></th>
+                <th class="col-weekly">W18<br><span style="font-weight:400">MAY 1–3</span></th>
+                <th class="col-weekly">W19<br><span style="font-weight:400">MAY 4–10</span></th>
+                <th class="col-weekly">W20<br><span style="font-weight:400">MAY 11–17</span></th>
+                <th class="col-weekly">W21<br><span style="font-weight:400">MAY 18–24</span></th>
+                <th class="col-weekly">W22<br><span style="font-weight:400">MAY 25–31</span></th>
               </tr>
             </thead>
             <tbody id="sc-body-leadership"></tbody>
@@ -789,9 +792,9 @@ textarea{resize:vertical;min-height:60px}
           <button class="sc-nav-btn">&#8594;</button>
           <button class="sc-today">TODAY</button>
           <div class="sc-tabs">
-            <button class="sc-tab">MONTHLY</button>
-            <button class="sc-tab active">WEEKLY</button>
-            <button class="sc-tab">DAILY</button>
+            <button class="sc-tab" onclick="setSCView('monthly',this,'finance')">MONTHLY</button>
+            <button class="sc-tab active" onclick="setSCView('weekly',this,'finance')">WEEKLY</button>
+            <button class="sc-tab" onclick="setSCView('daily',this,'finance')">DAILY</button>
           </div>
           <div class="sc-toggle">
             <div class="toggle-switch"><div class="toggle-knob"></div></div>
@@ -804,17 +807,17 @@ textarea{resize:vertical;min-height:60px}
           </div>
         </div>
         <div class="sc-table-wrap">
-          <table class="sc-table">
+          <table class="sc-table view-weekly" id="sc-table-finance">
             <thead>
               <tr>
                 <th>METRIC</th>
-                <th class="col-actuals">APR 2026<br><span style="font-weight:400;color:var(--muted)">ACTUALS</span></th>
+                <th class="col-actuals col-monthly-only">APR 2026<br><span style="font-weight:400;color:var(--muted)">ACTUALS</span></th>
                 <th>APR 2026<br><span style="font-weight:400">GOALS</span></th>
-                <th>W18<br><span style="font-weight:400">MAY 1–3</span></th>
-                <th>W19<br><span style="font-weight:400">MAY 4–10</span></th>
-                <th>W20<br><span style="font-weight:400">MAY 11–17</span></th>
-                <th>W21<br><span style="font-weight:400">MAY 18–24</span></th>
-                <th>W22<br><span style="font-weight:400">MAY 25–31</span></th>
+                <th class="col-weekly">W18<br><span style="font-weight:400">MAY 1–3</span></th>
+                <th class="col-weekly">W19<br><span style="font-weight:400">MAY 4–10</span></th>
+                <th class="col-weekly">W20<br><span style="font-weight:400">MAY 11–17</span></th>
+                <th class="col-weekly">W21<br><span style="font-weight:400">MAY 18–24</span></th>
+                <th class="col-weekly">W22<br><span style="font-weight:400">MAY 25–31</span></th>
               </tr>
             </thead>
             <tbody id="sc-body-finance"></tbody>
@@ -1223,9 +1226,14 @@ function showPage(page){
 }
 
 // ── Scorecard toggle ──────────────────────────────────────────────────────────
-function setSCView(view, btn){
+function setSCView(view, btn, scName){
   btn.closest('.sc-tabs').querySelectorAll('.sc-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
+  const table = document.getElementById(`sc-table-${scName}`);
+  if(table){
+    table.classList.remove('view-monthly','view-weekly','view-daily');
+    table.classList.add(`view-${view}`);
+  }
 }
 
 // ── Format helpers ────────────────────────────────────────────────────────────
@@ -1300,27 +1308,29 @@ function renderScorecard(name){
       const cols = ['actuals','goals','w18','w19','w20','w21','w22'];
       const colGoals = m.goals;
       const isPct = m.unit === '%';
+      const colClass = c => c==='actuals' ? 'col-monthly-only' : ['w18','w19','w20','w21','w22'].includes(c) ? 'col-weekly' : '';
       const cellsHtml = cols.map(col=>{
         const v = m[col];
         const display = fmtVal(v, m.unit);
         const isEmpty = !display;
+        const extra = colClass(col);
 
         // % metrics: pill with green/yellow/red vs goal
         if(isPct){
           if(col === 'goals'){
-            return `<td class="sc-cell val-black" onclick="startCellEdit(this,${m.id},'${col}','${name}')">
+            return `<td class="sc-cell val-black ${extra}" onclick="startCellEdit(this,${m.id},'${col}','${name}')">
               ${isEmpty ? '' : `<span class="sc-display">${display}</span>`}
             </td>`;
           }
           const goalVal = m.goals;
-          return `<td class="sc-cell" style="text-align:center" onclick="startCellEdit(this,${m.id},'${col}','${name}')">
+          return `<td class="sc-cell ${extra}" style="text-align:center" onclick="startCellEdit(this,${m.id},'${col}','${name}')">
             ${isEmpty ? `<span class="ms-pill empty">–</span>` : renderPctPill(v, goalVal)}
           </td>`;
         }
 
         // Non-% metrics: colored text
         const cls = valClass(v, colGoals, col);
-        return `<td class="sc-cell ${cls}" onclick="startCellEdit(this,${m.id},'${col}','${name}')">
+        return `<td class="sc-cell ${cls} ${extra}" onclick="startCellEdit(this,${m.id},'${col}','${name}')">
           ${isEmpty ? '' : `<span class="sc-display">${display}</span>`}
         </td>`;
       }).join('');
