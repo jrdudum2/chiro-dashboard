@@ -276,8 +276,9 @@ def update_dashboard_metric(mid):
     conn.close()
     return jsonify(row)
 
+init_db()
+
 if __name__ == '__main__':
-    init_db()
     port = int(os.environ.get('PORT', 5050))
     print(f"Dashboard running at http://localhost:{port}")
     app.run(host='0.0.0.0', port=port, debug=False)
