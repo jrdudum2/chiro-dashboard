@@ -138,7 +138,25 @@ def init_db():
         actuals TEXT DEFAULT '', goals TEXT DEFAULT '',
         w18 TEXT DEFAULT '', w19 TEXT DEFAULT '',
         w20 TEXT DEFAULT '', w21 TEXT DEFAULT '', w22 TEXT DEFAULT '',
+        monthly_data TEXT DEFAULT '{}',
         sort_order INTEGER DEFAULT 0, last_updated TEXT)''')
+    # migrate: add monthly_data column if missing
+    try:
+        conn.execute("ALTER TABLE scorecard_metrics ADD COLUMN monthly_data TEXT DEFAULT '{}'")
+        conn.commit()
+    except Exception:
+        pass
+    # migrate: seed monthly_data from actuals/goals where empty
+    rows_to_migrate = conn.execute(
+        "SELECT id, actuals, goals FROM scorecard_metrics WHERE monthly_data='{}' OR monthly_data IS NULL"
+    ).fetchall()
+    import json as _json
+    for row in rows_to_migrate:
+        md = {}
+        if row['actuals']: md['2026-04'] = {'actuals': row['actuals'], 'goals': row['goals'] or ''}
+        conn.execute("UPDATE scorecard_metrics SET monthly_data=? WHERE id=?",
+                     (_json.dumps(md), row['id']))
+    conn.commit()
 
     conn.execute('''CREATE TABLE IF NOT EXISTS dashboard_metrics (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -321,6 +339,28 @@ def delete_metric(mid):
     conn.execute("DELETE FROM scorecard_metrics WHERE id=?", (mid,))
     conn.commit(); conn.close()
     return jsonify({'status': 'ok'})
+
+@app.route('/api/scorecard/metric/<int:mid>/monthly', methods=['PUT'])
+def update_monthly(mid):
+    import json as _json
+    data = request.get_json()
+    year_month = data.get('year_month')  # e.g. "2026-05"
+    field = data.get('field')            # "actuals" or "goals"
+    value = data.get('value', '')
+    if not year_month or field not in ('actuals', 'goals'):
+        return jsonify({'error': 'year_month and field required'}), 400
+    conn = get_db()
+    row = conn.execute("SELECT monthly_data FROM scorecard_metrics WHERE id=?", (mid,)).fetchone()
+    if not row: return jsonify({'error': 'not found'}), 404
+    md = _json.loads(row['monthly_data'] or '{}')
+    if year_month not in md: md[year_month] = {'actuals': '', 'goals': ''}
+    md[year_month][field] = value
+    conn.execute("UPDATE scorecard_metrics SET monthly_data=?, last_updated=? WHERE id=?",
+                 (_json.dumps(md), datetime.now().isoformat(), mid))
+    conn.commit()
+    row = dict(conn.execute("SELECT * FROM scorecard_metrics WHERE id=?", (mid,)).fetchone())
+    conn.close()
+    return jsonify(row)
 
 # ── Dashboard metrics API ──────────────────────────────────────────────────────
 
