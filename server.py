@@ -33,6 +33,24 @@ SEED_SCORECARDS = {
         ('METRICS', 'Total Sales',   'DC', '$', 0, '180000','272000','12000','74000','','',''),
         ('METRICS', 'Unloaded CAC',  'DC', '$', 1, '',      '',      '',     '',     '','',''),
     ],
+    'marketing': [
+        # METRICS
+        ('METRICS', 'New Leads', 'DC', '', 0, '1784', '600', '228', '323', '', '', ''),
+        # INSTAGRAM ANALYTICS
+        ('INSTAGRAM ANALYTICS', 'Total Followers',   'DC', '', 0, '15158', '', '15923', '', '', '', ''),
+        ('INSTAGRAM ANALYTICS', 'Posts Created',     'DC', '', 1, '192',   '', '52',    '', '', '', ''),
+        ('INSTAGRAM ANALYTICS', 'Views',             'DC', '', 2, '1060133','','282803','', '', '', ''),
+        ('INSTAGRAM ANALYTICS', 'Interactions',      'DC', '', 3, '16626', '', '5210',  '', '', '', ''),
+        ('INSTAGRAM ANALYTICS', 'Stories Created',   'DC', '', 4, '123',   '', '31',    '', '', '', ''),
+        ('INSTAGRAM ANALYTICS', 'Accounts Engaged',  'DC', '', 5, '11001', '', '3383',  '', '', '', ''),
+        # GOOGLE BUSINESS PROFILE
+        ('GOOGLE BUSINESS PROFILE', 'Total Views',         'DC', '', 0, '', '', '', '', '', '', ''),
+        ('GOOGLE BUSINESS PROFILE', 'Search Views',        'DC', '', 1, '', '', '', '', '', '', ''),
+        ('GOOGLE BUSINESS PROFILE', 'Map Views',           'DC', '', 2, '', '', '', '', '', '', ''),
+        ('GOOGLE BUSINESS PROFILE', 'Website Clicks',      'DC', '', 3, '', '', '', '', '', '', ''),
+        ('GOOGLE BUSINESS PROFILE', 'Direction Requests',  'DC', '', 4, '', '', '', '', '', '', ''),
+        ('GOOGLE BUSINESS PROFILE', 'Phone Calls',         'DC', '', 5, '', '', '', '', '', '', ''),
+    ],
     'sales': [
         # METRICS (21)
         ('METRICS', 'New Leads',                   'DC', '',  0,  '1784',   '600',  '228', '323', '', '', ''),
