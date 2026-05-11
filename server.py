@@ -3,9 +3,9 @@ import requests
 import uuid
 import os
 from datetime import datetime
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_from_directory
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'chiro.db')
 GHL_API_KEY = "10b041a3-87b0-4083-bb18-f20d4610fb23"
@@ -204,6 +204,10 @@ def sync_ghl_contacts():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/manifest.json')
+def manifest():
+    return send_from_directory('static', 'manifest.json', mimetype='application/manifest+json')
 
 # ── Patient API ────────────────────────────────────────────────────────────────
 

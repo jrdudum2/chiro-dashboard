@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dudum chiro — Precision</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Dudum Chiro">
+<meta name="theme-color" content="#f97316">
+<link rel="manifest" href="/manifest.json">
+<title>Dudum Chiro Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -574,6 +579,42 @@ textarea{resize:vertical;min-height:60px}
 #toast.show{opacity:1;transform:translateY(0)}
 #toast.success{border-color:var(--green);color:var(--green)}
 #toast.error{border-color:var(--red);color:var(--red)}
+
+/* ── Mobile ── */
+@media(max-width:768px){
+  body{flex-direction:column}
+  .sidebar{
+    width:100%;min-width:unset;height:56px;min-height:56px;
+    flex-direction:row;padding:0 8px;
+    position:fixed;bottom:0;left:0;right:0;z-index:200;
+    border-right:none;border-top:1px solid var(--border);
+    order:99;padding-bottom:env(safe-area-inset-bottom);
+  }
+  .sidebar-logo{margin-bottom:0;margin-right:4px}
+  .sidebar-nav{flex-direction:row;gap:0;flex:1;justify-content:space-around}
+  .nav-item{width:44px;height:44px}
+  .sidebar-bottom{flex-direction:row;margin-top:0;padding-bottom:0;gap:0}
+  .main-wrapper{flex:1;overflow:hidden}
+  .header{padding:0 12px;height:48px}
+  .header-icon-btn{display:none}
+  .page-content{padding-bottom:72px}
+  .sc-section-tabs{padding:8px 10px 0;overflow-x:auto;white-space:nowrap;flex-wrap:nowrap}
+  .sc-controls{padding:6px 8px;gap:4px;flex-wrap:wrap}
+  .sc-nav-btn,.sc-today,.sc-toggle,.sc-quarter-btn,.sc-icon-btn{display:none}
+  .sc-tabs{border-radius:6px}
+  .sc-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .sc-table th:first-child{min-width:120px;max-width:160px}
+  .sc-cell{min-width:60px;padding:5px 7px;font-size:12px}
+  .metric-name-text{font-size:12px}
+  .dash-grid{grid-template-columns:repeat(2,1fr)!important}
+  .page{padding:0}
+  .clinical-controls{flex-wrap:wrap;gap:6px;padding:8px}
+  .pat-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+}
+@media(max-width:400px){
+  .dash-grid{grid-template-columns:1fr 1fr!important}
+  .sc-stab{padding:6px 10px;font-size:12px}
+}
 </style>
 </head>
 <body>
