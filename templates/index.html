@@ -1519,9 +1519,10 @@ function renderScorecard(name){
   });
 
   let html='';
+  const totalCols = isMonthly ? 1 + 4*2 : 8;
   Object.entries(sections).forEach(([section, metrics])=>{
     html += `<tr class="sc-section-row" data-section="${section}">
-      <td colspan="8">
+      <td colspan="${totalCols}">
         <div class="sc-section-label" onclick="toggleSection(this)">
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 6,8 10,4"/></svg>
           ${section} <span class="sc-section-count">(${metrics.length})</span>
@@ -1587,7 +1588,7 @@ function renderScorecard(name){
 
   // Add metric rows per section
   html += `<tr class="sc-add-row">
-    <td colspan="8">
+    <td colspan="${totalCols}">
       <button class="sc-add-btn" onclick="promptAddMetric('${name}')">
         <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" style="width:12px;height:12px">
           <line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/>
