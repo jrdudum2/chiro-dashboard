@@ -205,6 +205,16 @@ body{font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:
 }
 .sc-today:hover{border-color:var(--muted)}
 .sc-tabs{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.sc-section-tabs{
+  display:flex;gap:4px;padding:12px 20px 0;background:var(--white);border-bottom:2px solid var(--border);
+}
+.sc-stab{
+  padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;
+  color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;
+  margin-bottom:-2px;transition:color 0.15s,border-color 0.15s;font-family:'Inter',sans-serif;
+}
+.sc-stab.active{color:var(--orange);border-bottom-color:var(--orange)}
+.sc-stab:hover:not(.active){color:var(--text2)}
 .sc-tab{
   padding:4px 12px;font-size:12px;font-weight:500;cursor:pointer;
   color:var(--muted);background:var(--white);border:none;transition:background 0.15s;
@@ -740,6 +750,12 @@ textarea{resize:vertical;min-height:60px}
 
       <!-- ══════════ LEADERSHIP SCORECARD ══════════ -->
       <div id="page-leadership" class="page active">
+        <div class="sc-section-tabs">
+          <button class="sc-stab active" onclick="filterScSection('ALL','leadership',this)">All</button>
+          <button class="sc-stab" onclick="filterScSection('MARKETING','leadership',this)">Marketing</button>
+          <button class="sc-stab" onclick="filterScSection('SALES','leadership',this)">Sales</button>
+          <button class="sc-stab" onclick="filterScSection('FINANCE','leadership',this)">Finance</button>
+        </div>
         <div class="sc-controls">
           <button class="sc-nav-btn">&#8592;</button>
           <button class="sc-nav-btn">&#8594;</button>
@@ -1225,6 +1241,24 @@ function showPage(page){
   }
 }
 
+// ── Section filter ────────────────────────────────────────────────────────────
+function filterScSection(section, scName, btn){
+  // update active tab
+  btn.closest('.sc-section-tabs').querySelectorAll('.sc-stab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  // show/hide rows
+  const tbody = document.getElementById(`sc-body-${scName}`);
+  if(!tbody) return;
+  tbody.querySelectorAll('tr[data-section]').forEach(row=>{
+    row.style.display = (section==='ALL' || row.dataset.section===section) ? '' : 'none';
+  });
+  // show/hide section header rows
+  tbody.querySelectorAll('tr.sc-section-row').forEach(row=>{
+    const sec = row.dataset.section;
+    row.style.display = (section==='ALL' || sec===section) ? '' : 'none';
+  });
+}
+
 // ── Scorecard toggle ──────────────────────────────────────────────────────────
 function setSCView(view, btn, scName){
   btn.closest('.sc-tabs').querySelectorAll('.sc-tab').forEach(t=>t.classList.remove('active'));
@@ -1294,7 +1328,7 @@ function renderScorecard(name){
 
   let html='';
   Object.entries(sections).forEach(([section, metrics])=>{
-    html += `<tr class="sc-section-row">
+    html += `<tr class="sc-section-row" data-section="${section}">
       <td colspan="8">
         <div class="sc-section-label" onclick="toggleSection(this)">
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 6,8 10,4"/></svg>
@@ -1335,7 +1369,7 @@ function renderScorecard(name){
         </td>`;
       }).join('');
 
-      html += `<tr>
+      html += `<tr data-section="${m.section}">
         <td>
           <div class="metric-name-cell">
             <div class="owner-avatar ${ownerClass}">${m.owner}</div>
