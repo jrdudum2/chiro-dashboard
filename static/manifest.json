@@ -1,11 +1,11 @@
 {
-  "name": "Dudum Chiro Dashboard",
-  "short_name": "Dudum Chiro",
+  "name": "DECOMP Dashboard",
+  "short_name": "DECOMP",
   "description": "Chiropractic practice scorecard and patient dashboard",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#f97316",
+  "theme_color": "#1e3a8a",
   "orientation": "any",
   "icons": [
     {
