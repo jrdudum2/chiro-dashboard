@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dudum chiro — Precision</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f9fafb;
+  --white:#ffffff;
+  --border:#e5e7eb;
+  --border2:#f3f4f6;
+  --text:#111827;
+  --text2:#374151;
+  --muted:#6b7280;
+  --muted2:#9ca3af;
+  --orange:#f97316;
+  --orange-bg:#fff7ed;
+  --blue:#2563eb;
+  --blue-light:#eff6ff;
+  --green:#10b981;
+  --green-bg:#ecfdf5;
+  --red:#ef4444;
+  --red-bg:#fef2f2;
+  --yellow:#f59e0b;
+  --sidebar-w:60px;
+  --claudia-w:284px;
+  --header-h:52px;
+}
+body{font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:var(--bg);display:flex;height:100vh;overflow:hidden}
+
+/* ── Sidebar ── */
+.sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);
+  background:var(--white);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;
+  padding:12px 0;gap:0;z-index:100;
+}
+.sidebar-logo{
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:20px;cursor:pointer;
+}
+.sidebar-logo svg{width:28px;height:28px}
+.sidebar-nav{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.nav-item{
+  position:relative;width:40px;height:40px;display:flex;align-items:center;
+  justify-content:center;border-radius:8px;cursor:pointer;color:var(--muted);
+  transition:background 0.15s,color 0.15s;
+}
+.nav-item:hover{background:var(--bg);color:var(--text2)}
+.nav-item.active{color:var(--text2)}
+.nav-item svg{width:20px;height:20px}
+.nav-dot{
+  position:absolute;top:6px;right:6px;width:7px;height:7px;
+  background:var(--blue);border-radius:50%;border:1.5px solid var(--white);
+  display:none;
+}
+.nav-item.active .nav-dot{display:block}
+.sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:4px;padding-bottom:4px}
+
+/* ── Main wrapper ── */
+.main-wrapper{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* ── Header ── */
+.header{
+  height:var(--header-h);min-height:var(--header-h);
+  background:var(--white);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;flex-shrink:0;
+}
+.header-left{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text2)}
+.header-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:14px}
+.breadcrumb-sep{color:var(--muted2);font-size:12px}
+.breadcrumb-parent{color:var(--muted);cursor:pointer}
+.breadcrumb-parent:hover{color:var(--text)}
+.breadcrumb-current{color:var(--text);font-weight:500}
+.header-right{display:flex;align-items:center;gap:8px}
+.header-icon-btn{
+  width:32px;height:32px;border-radius:6px;border:1px solid var(--border);
+  background:var(--white);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--muted);transition:border-color 0.15s;
+}
+.header-icon-btn:hover{border-color:var(--muted2);color:var(--text2)}
+.header-icon-btn svg{width:16px;height:16px}
+.claudia-btn{
+  display:flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,#3b82f6,#2563eb);
+  color:white;border:none;border-radius:7px;
+  padding:6px 12px;font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'Inter',sans-serif;
+  transition:opacity 0.15s;
+}
+.claudia-btn:hover{opacity:0.9}
+.claudia-btn-star{font-size:12px;opacity:0.85}
+.avatar{
+  width:30px;height:30px;border-radius:50%;
+  background:#dbeafe;color:#1d4ed8;
+  font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+
+/* ── Page area ── */
+.page-area{flex:1;display:flex;overflow:hidden}
+.page-content{flex:1;overflow-y:auto;min-width:0}
+.page{display:none}
+.page.active{display:block}
+
+/* ── Claudia sidebar ── */
+.claudia-sidebar{
+  width:var(--claudia-w);min-width:var(--claudia-w);
+  background:var(--white);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;padding:0;overflow:hidden;
+}
+.claudia-top{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:24px 20px;gap:16px;
+}
+.claudia-logo{width:52px;height:52px}
+.claudia-greeting{font-size:15px;font-weight:600;color:var(--text);text-align:center}
+.claudia-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.claudia-chip{
+  background:var(--bg);border:1px solid var(--border);border-radius:20px;
+  padding:6px 12px;font-size:12px;color:var(--text2);cursor:pointer;
+  transition:border-color 0.15s,background 0.15s;white-space:nowrap;
+}
+.claudia-chip:hover{background:#f3f4f6;border-color:var(--muted2)}
+.claudia-input-wrap{
+  border-top:1px solid var(--border);padding:12px 16px;
+  display:flex;align-items:center;gap:8px;
+}
+.claudia-input{
+  flex:1;border:none;outline:none;font-family:'Inter',sans-serif;
+  font-size:13px;color:var(--text);background:none;
+}
+.claudia-input::placeholder{color:var(--muted2)}
+.claudia-mic{width:28px;height:28px;border-radius:50%;background:var(--bg);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.claudia-mic svg{width:13px;height:13px;color:var(--muted)}
+.claudia-send{
+  width:28px;height:28px;border-radius:6px;
+  background:var(--text);border:none;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;
+}
+.claudia-send svg{width:12px;height:12px;color:white}
+.claudia-hint{font-size:10px;color:var(--muted2);text-align:center;padding:6px 16px 10px}
+
+/* ── Dashboard page ── */
+.dash-body{max-width:860px;margin:0 auto;padding:40px 24px}
+.dash-hero{text-align:center;margin-bottom:32px}
+.dash-logo-wrap{display:flex;justify-content:center;margin-bottom:12px}
+.dash-greeting{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.dash-sub{font-size:13px;color:var(--muted)}
+.dash-total-label{font-size:11px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:var(--muted);margin-top:20px;margin-bottom:4px}
+.dash-total-value{font-size:44px;font-weight:700;color:var(--text);line-height:1}
+.dash-change{font-size:13px;font-weight:500;margin-top:4px}
+.dash-change.up{color:var(--green)}
+.dash-change.down{color:var(--red)}
+
+/* Chart */
+.chart-wrap{
+  background:var(--white);border:1px solid var(--border);border-radius:12px;
+  padding:20px;margin-bottom:20px;position:relative;overflow:hidden;
+}
+.chart-svg{width:100%;height:110px;display:block}
+.chart-y-labels{position:absolute;left:16px;top:16px;bottom:28px;display:flex;flex-direction:column;justify-content:space-between}
+.chart-y-label{font-size:11px;color:var(--muted2)}
+.chart-x-labels{display:flex;justify-content:space-between;margin-top:4px;padding:0 4px}
+.chart-x-label{font-size:11px;color:var(--muted2)}
+
+/* Metric cards */
+.dash-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.dash-card{
+  background:var(--white);border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px;cursor:default;
+}
+.dash-card-label{font-size:11px;color:var(--muted);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px}
+.dash-card-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dash-card-dot.red{background:var(--red)}
+.dash-card-dot.green{background:var(--green)}
+.dash-card-value{font-size:22px;font-weight:700;color:var(--text);margin-bottom:2px}
+.dash-card-change{font-size:12px;font-weight:500}
+.dash-card-change.up{color:var(--green)}
+.dash-card-change.down{color:var(--red)}
+.dash-card-empty{font-size:22px;font-weight:700;color:var(--muted2)}
+
+/* ── Scorecard page ── */
+.sc-controls{
+  display:flex;align-items:center;gap:10px;padding:10px 20px;
+  border-bottom:1px solid var(--border);background:var(--white);flex-wrap:wrap;
+}
+.sc-nav-btn{
+  width:28px;height:28px;border:1px solid var(--border);border-radius:6px;
+  background:var(--white);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--muted);font-size:14px;transition:border-color 0.15s;
+}
+.sc-nav-btn:hover{border-color:var(--muted);color:var(--text2)}
+.sc-today{
+  border:1px solid var(--border);border-radius:6px;padding:4px 10px;
+  font-size:12px;font-weight:500;cursor:pointer;background:var(--white);
+  color:var(--text2);transition:border-color 0.15s;
+}
+.sc-today:hover{border-color:var(--muted)}
+.sc-tabs{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.sc-tab{
+  padding:4px 12px;font-size:12px;font-weight:500;cursor:pointer;
+  color:var(--muted);background:var(--white);border:none;transition:background 0.15s;
+}
+.sc-tab.active{background:var(--bg);color:var(--text)}
+.sc-tab:hover:not(.active){background:var(--bg)}
+.sc-toggle{
+  display:flex;align-items:center;gap:6px;padding:4px 10px;
+  border:1px solid var(--border);border-radius:20px;font-size:12px;
+  color:var(--text2);cursor:pointer;background:var(--white);
+}
+.toggle-switch{
+  width:32px;height:18px;background:var(--blue);border-radius:9px;
+  position:relative;cursor:pointer;
+}
+.toggle-knob{
+  position:absolute;right:2px;top:2px;width:14px;height:14px;
+  background:white;border-radius:50%;transition:right 0.15s;
+}
+.sc-quarter-btn{
+  display:flex;align-items:center;gap:4px;padding:4px 10px;
+  border:1px solid var(--border);border-radius:6px;font-size:12px;
+  color:var(--text2);cursor:pointer;background:var(--white);
+}
+.sc-quarter-btn svg{width:12px;height:12px;color:var(--muted)}
+.sc-icon-btn{
+  width:28px;height:28px;border:1px solid var(--border);border-radius:6px;
+  background:var(--white);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--muted);
+}
+.sc-icon-btn svg{width:14px;height:14px}
+
+/* Scorecard table */
+.sc-table-wrap{overflow-x:auto;padding:0}
+.sc-table{width:100%;border-collapse:collapse;font-size:13px}
+.sc-table th{
+  padding:10px 14px;text-align:left;font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);
+  border-bottom:1px solid var(--border);border-right:1px solid var(--border2);
+  background:var(--white);white-space:nowrap;
+}
+.sc-table th:first-child{min-width:200px;border-right:1px solid var(--border)}
+.sc-table th.col-actuals{color:var(--text2)}
+.sc-table td{
+  padding:0;border-bottom:1px solid var(--border2);
+  border-right:1px solid var(--border2);vertical-align:middle;
+}
+.sc-table td:first-child{border-right:1px solid var(--border)}
+.sc-table tr:last-child td{border-bottom:none}
+.sc-table tr:hover td{background:#fafafa}
+
+/* Section header row */
+.sc-section-row td{
+  padding:8px 14px;background:var(--bg);border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.sc-section-label{
+  display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  color:var(--text2);cursor:pointer;user-select:none;
+}
+.sc-section-label svg{width:12px;height:12px;color:var(--muted);transition:transform 0.15s}
+.sc-section-label.collapsed svg{transform:rotate(-90deg)}
+.sc-section-count{color:var(--muted);font-weight:400}
+
+/* Metric row */
+.metric-name-cell{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;
+}
+.owner-avatar{
+  width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.owner-dc{background:#dbeafe;color:#1e40af}
+.owner-kh{background:#fef3c7;color:#92400e}
+.owner-dc2{background:#dcfce7;color:#166534}
+.metric-name-text{font-size:13px;color:var(--text);font-weight:500}
+.metric-icon-btn{
+  margin-left:auto;opacity:0;width:24px;height:24px;border:none;background:none;
+  border-radius:4px;cursor:pointer;color:var(--muted);font-size:13px;
+  display:flex;align-items:center;justify-content:center;transition:opacity 0.15s;
+}
+tr:hover .metric-icon-btn{opacity:1}
+
+/* Editable value cells */
+.sc-cell{
+  padding:10px 14px;text-align:right;cursor:pointer;min-width:90px;
+  font-size:13px;font-weight:500;position:relative;
+}
+.sc-cell:hover{background:#f9fafb}
+.sc-cell.val-red{color:var(--red)}
+.sc-cell.val-green{color:var(--green)}
+.sc-cell.val-black{color:var(--text)}
+.sc-cell.val-empty{color:var(--muted2)}
+.sc-cell-input{
+  width:100%;background:none;border:none;outline:none;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
+  text-align:right;padding:0;color:inherit;cursor:text;
+}
+.sc-cell.editing{background:var(--blue-light);outline:2px solid var(--blue);outline-offset:-2px;border-radius:2px}
+.doc-icon{font-size:14px;color:var(--muted2)}
+
+/* Add metric row */
+.sc-add-row td{padding:0}
+.sc-add-btn{
+  display:flex;align-items:center;gap:6px;padding:8px 14px;
+  font-size:12px;color:var(--muted);cursor:pointer;width:100%;
+  background:none;border:none;font-family:'Inter',sans-serif;
+  transition:color 0.15s;
+}
+.sc-add-btn:hover{color:var(--blue)}
+
+/* ── Team/Analytics page ── */
+.team-body{padding:24px}
+.team-header-card{
+  background:var(--white);border:1px solid var(--border);border-radius:10px;
+  padding:16px 20px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.team-lead-wrap{display:flex;align-items:center;gap:10px}
+.team-lead-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:2px}
+.team-lead-name{font-size:14px;font-weight:600;color:var(--text)}
+.team-members-btn{
+  display:flex;align-items:center;gap:6px;padding:6px 12px;
+  border:1px solid var(--border);border-radius:6px;background:var(--white);
+  font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;
+}
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.team-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:0;overflow:hidden}
+.team-card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;border-bottom:1px solid var(--border);
+}
+.team-card-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text)}
+.team-card-title svg{width:16px;height:16px;color:var(--muted)}
+.team-card-count{font-size:12px;color:var(--muted)}
+.team-card-body{padding:14px 16px}
+.team-empty{font-size:12px;color:var(--muted);text-align:center;padding:20px 0}
+
+.scorecard-link{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;border:1px solid var(--border);border-radius:8px;
+  margin-bottom:8px;cursor:pointer;transition:border-color 0.15s;
+}
+.scorecard-link:hover{border-color:var(--muted2)}
+.scorecard-link:last-child{margin-bottom:0}
+.scorecard-link-left{display:flex;align-items:center;gap:10px}
+.scorecard-link-icon{
+  width:32px;height:32px;border-radius:8px;background:var(--orange-bg);
+  display:flex;align-items:center;justify-content:center;
+}
+.scorecard-link-icon svg{width:16px;height:16px;color:var(--orange)}
+.scorecard-link-icon.bar{background:var(--blue-light)}
+.scorecard-link-icon.bar svg{color:var(--blue)}
+.scorecard-link-name{font-size:13px;font-weight:500;color:var(--text)}
+.scorecard-link-meta{font-size:11px;color:var(--muted)}
+.open-btn{
+  padding:4px 12px;border:1px solid var(--border);border-radius:6px;
+  font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;
+  background:var(--white);transition:border-color 0.15s;
+}
+.open-btn:hover{border-color:var(--muted2)}
+
+/* Goal card */
+.goal-card{
+  border:1px solid var(--border);border-radius:8px;padding:14px 16px;
+  margin-top:0;
+}
+.goal-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;display:flex;align-items:center;justify-content:space-between}
+.goal-dot{width:10px;height:10px;border-radius:50%;background:var(--yellow);flex-shrink:0}
+.goal-vs{font-size:12px;color:var(--muted);margin-bottom:10px}
+.goal-progress-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.goal-progress-text{color:var(--muted)}
+.goal-progress-behind{color:var(--orange);font-weight:500}
+.goal-bar-bg{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:10px}
+.goal-bar-fill{height:100%;background:var(--orange);border-radius:3px}
+.goal-team{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+
+/* ── Clinical page ── */
+.clinical-stats{
+  display:flex;gap:10px;padding:12px 20px;
+  background:var(--white);border-bottom:1px solid var(--border);flex-wrap:wrap;
+}
+.clin-stat{
+  flex:1;min-width:100px;background:var(--bg);border:1px solid var(--border);
+  border-radius:8px;padding:8px 12px;
+}
+.clin-stat-val{font-size:22px;font-weight:700;line-height:1}
+.clin-stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px}
+.clin-stat.s-active .clin-stat-val{color:var(--blue)}
+.clin-stat.s-green .clin-stat-val{color:var(--green)}
+.clin-stat.s-yellow .clin-stat-val{color:var(--yellow)}
+.clin-stat.s-red .clin-stat-val{color:var(--red)}
+
+.clin-actions{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px;background:var(--white);border-bottom:1px solid var(--border);
+}
+.clin-title{font-size:14px;font-weight:600;color:var(--text)}
+.clin-btns{display:flex;gap:8px}
+
+/* Patient table */
+.pat-table-wrap{overflow-x:auto;padding:0}
+.pat-table{width:100%;border-collapse:collapse;font-size:13px}
+.pat-table th{
+  padding:9px 12px;text-align:left;font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);
+  background:var(--bg);border-bottom:1px solid var(--border);white-space:nowrap;
+}
+.pat-table th.ms-group{text-align:center;border-left:1px solid var(--border2)}
+.pat-table tbody tr{border-bottom:1px solid var(--border2);transition:background 0.1s}
+.pat-table tbody tr:hover{background:#fafafa}
+.pat-table td{padding:10px 12px;vertical-align:middle;white-space:nowrap}
+.pat-name{font-weight:600;color:var(--text);max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.pat-source{font-size:10px;color:var(--muted);margin-top:1px}
+.prog-wrap{display:flex;align-items:center;gap:7px;min-width:120px}
+.prog-bg{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:var(--blue);border-radius:3px}
+.prog-txt{font-size:11px;color:var(--muted);min-width:36px}
+.ms-cell{text-align:center;border-left:1px solid var(--border2);min-width:64px;padding:7px 5px;cursor:pointer}
+.ms-pill{display:inline-block;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;min-width:40px;text-align:center;cursor:pointer;transition:opacity 0.15s}
+.ms-pill:hover{opacity:0.8}
+.ms-pill.green{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+.ms-pill.yellow{background:#fef9c3;color:#a16207;border:1px solid #fef08a}
+.ms-pill.red{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}
+.ms-pill.empty{background:var(--bg);color:var(--muted2);border:1px solid var(--border2)}
+/* Row status bar */
+.pat-status-bar{width:4px;height:100%;border-radius:2px;display:inline-block;flex-shrink:0}
+.pat-status-bar.green{background:#15803d}
+.pat-status-bar.yellow{background:#a16207}
+.pat-status-bar.red{background:#b91c1c}
+.pat-status-bar.none{background:var(--border)}
+.ms-inline{width:54px;text-align:center;font-weight:700;font-size:12px;padding:2px 5px;border-radius:6px;border:2px solid var(--blue);background:var(--blue-light);color:var(--blue);outline:none}
+.ms-inline.m-green{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.ms-inline.m-yellow{background:#fefce8;color:#a16207;border-color:#a16207}
+.ms-inline.m-red{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge.paid{background:var(--green-bg);color:var(--green)}
+.badge.plan{background:var(--blue-light);color:var(--blue)}
+.badge.overdue{background:var(--red-bg);color:var(--red)}
+.badge.notset{background:var(--bg);color:var(--muted)}
+.badge.mri-done{background:var(--green-bg);color:var(--green)}
+.badge.mri-pend{background:#fefce8;color:#a16207}
+.badge.mri-no{background:var(--bg);color:var(--muted)}
+.today-wrap{display:flex;gap:3px}
+.today-btn{border:none;border-radius:5px;padding:3px 7px;font-size:11px;font-weight:600;cursor:pointer;transition:opacity 0.15s;font-family:'Inter',sans-serif}
+.today-btn.sched{background:var(--blue-light);color:var(--blue)}
+.today-btn.showed{background:var(--green-bg);color:var(--green)}
+.today-btn.noshow{background:var(--red-bg);color:var(--red)}
+.today-btn.act{box-shadow:0 0 0 2px currentColor}
+.dropout-flag{color:var(--red);font-size:11px;font-weight:600}
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty-state .ei{font-size:40px;margin-bottom:10px}
+.empty-state h3{font-size:15px;color:var(--text2);margin-bottom:4px}
+
+/* Buttons */
+.btn{border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity 0.15s;display:inline-flex;align-items:center;gap:5px;font-family:'Inter',sans-serif}
+.btn:hover{opacity:0.85}
+.btn-primary{background:var(--blue);color:white}
+.btn-secondary{background:var(--white);color:var(--text2);border:1px solid var(--border)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid #fca5a5}
+.btn-sm{padding:5px 10px;font-size:11px}
+.icon-edit{background:none;border:1px solid var(--border);border-radius:5px;padding:4px 7px;cursor:pointer;color:var(--muted);font-size:12px;transition:color 0.15s,border-color 0.15s}
+.icon-edit:hover{color:var(--blue);border-color:var(--blue)}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border:1px solid var(--border);border-radius:12px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.modal-hdr{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:700}
+.modal-x{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1}
+.modal-x:hover{background:var(--bg);color:var(--text)}
+.modal-body{padding:18px 22px}
+.modal-ftr{padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:1/-1}
+label{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);font-weight:600}
+input,select,textarea{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:7px 9px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;width:100%;transition:border-color 0.15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue)}
+select option{background:var(--white)}
+textarea{resize:vertical;min-height:60px}
+.ms-modal-section{margin-top:16px}
+.ms-modal-title{font-size:10px;text-transform:uppercase;letter-spacing:0.6px;color:var(--muted);font-weight:600;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.ms-modal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.ms-modal-wrap{display:flex;flex-direction:column;gap:3px}
+.ms-modal-lbl{font-size:10px;font-weight:700;text-align:center;padding:3px;border-radius:4px;background:var(--bg)}
+.ms-modal-lbl .exp{font-size:9px;font-weight:400;color:var(--muted)}
+.ms-modal-wrap input{text-align:center;font-weight:700;font-size:14px}
+.ms-modal-wrap input.m-green{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.ms-modal-wrap input.m-yellow{background:#fefce8;color:#a16207;border-color:#a16207}
+.ms-modal-wrap input.m-red{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+
+/* ── Instagram Tab ── */
+.ig-page{padding:24px}
+.ig-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.ig-title{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700}
+.ig-title svg{width:22px;height:22px}
+.ig-connect-btn{
+  display:flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);
+  color:white;border:none;border-radius:7px;padding:7px 14px;
+  font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+}
+.ig-connect-btn.connected{background:linear-gradient(135deg,#10b981,#059669)}
+.ig-status{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:16px}
+.ig-status-dot{width:8px;height:8px;border-radius:50%;background:var(--muted2)}
+.ig-status-dot.live{background:var(--green)}
+
+/* Big KPI cards */
+.ig-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:900px){.ig-kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.ig-kpi-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.ig-kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:6px}
+.ig-kpi-val{font-size:30px;font-weight:700;color:var(--text);line-height:1;margin-bottom:4px}
+.ig-kpi-change{font-size:12px;font-weight:500}
+.ig-kpi-change.up{color:var(--green)}
+.ig-kpi-change.down{color:var(--red)}
+.ig-kpi-change.flat{color:var(--muted)}
+
+/* Detail grid */
+.ig-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:900px){.ig-detail-grid{grid-template-columns:repeat(2,1fr)}}
+.ig-detail-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.ig-detail-label{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:4px}
+.ig-detail-val{font-size:20px;font-weight:700;color:var(--text)}
+.ig-detail-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Last posts preview */
+.ig-posts-section{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 20px}
+.ig-posts-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px}
+.ig-posts-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.ig-post-thumb{aspect-ratio:1;border-radius:8px;background:var(--bg);border:1px solid var(--border);overflow:hidden;position:relative;cursor:pointer}
+.ig-post-thumb img{width:100%;height:100%;object-fit:cover}
+.ig-post-thumb-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted2);font-size:22px}
+.ig-post-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity 0.15s;color:white;font-size:12px;font-weight:600;border-radius:8px}
+.ig-post-thumb:hover .ig-post-overlay{opacity:1}
+
+/* Connect banner */
+.ig-connect-banner{
+  background:linear-gradient(135deg,#fdf2f8,#fff7ed);
+  border:1px solid #f9a8d4;border-radius:10px;
+  padding:24px;text-align:center;margin-bottom:20px;
+}
+.ig-connect-banner h3{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px}
+.ig-connect-banner p{font-size:13px;color:var(--muted);margin-bottom:16px}
+.ig-token-form{display:flex;gap:8px;max-width:500px;margin:0 auto}
+.ig-token-input{flex:1;border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:13px;font-family:'Inter',sans-serif;color:var(--text);background:var(--white)}
+.ig-token-input:focus{outline:none;border-color:#833ab4}
+
+/* Toast */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:12px;font-weight:600;z-index:9999;opacity:0;transform:translateY(8px);transition:opacity 0.2s,transform 0.2s;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,0.1)}
+#toast.show{opacity:1;transform:translateY(0)}
+#toast.success{border-color:var(--green);color:var(--green)}
+#toast.error{border-color:var(--red);color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- ══ LEFT SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo" onclick="showPage('dashboard')">
+    <svg viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="13" stroke="#f97316" stroke-width="2.2"/>
+      <circle cx="16" cy="16" r="7" stroke="#f97316" stroke-width="2.2"/>
+      <circle cx="16" cy="16" r="2.5" fill="#f97316"/>
+      <line x1="16" y1="3" x2="16" y2="9" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="16" y1="23" x2="16" y2="29" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="3" y1="16" x2="9" y2="16" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="23" y1="16" x2="29" y2="16" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <nav class="sidebar-nav">
+    <!-- Dashboard -->
+    <div class="nav-item" id="nav-dashboard" onclick="showPage('dashboard')" title="Dashboard">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 11l8-8 8 8v7a1 1 0 01-1 1H3a1 1 0 01-1-1v-7z"/><path d="M7 22v-7h6v7"/></svg>
+      <span class="nav-dot"></span>
+    </div>
+    <!-- Scorecards (Analytics) -->
+    <div class="nav-item active" id="nav-scorecards" onclick="showPage('leadership')" title="Scorecards">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+        <polyline points="3,14 7,9 11,12 17,5"/>
+        <circle cx="17" cy="5" r="1.5" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="nav-dot"></span>
+    </div>
+    <!-- Goals -->
+    <div class="nav-item" id="nav-team" onclick="showPage('team')" title="Team & Goals">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="10" cy="10" r="8"/>
+        <circle cx="10" cy="10" r="4"/>
+        <circle cx="10" cy="10" r="1.5" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="nav-dot"></span>
+    </div>
+    <!-- Finance -->
+    <div class="nav-item" id="nav-finance" onclick="showPage('finance')" title="Finance Scorecard">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="2" y="4" width="16" height="13" rx="1.5"/>
+        <line x1="2" y1="8" x2="18" y2="8"/>
+        <line x1="6" y1="12" x2="8" y2="12"/>
+        <line x1="11" y1="12" x2="14" y2="12"/>
+      </svg>
+      <span class="nav-dot"></span>
+    </div>
+    <!-- Instagram -->
+    <div class="nav-item" id="nav-instagram" onclick="showPage('instagram')" title="Instagram">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="2" y="2" width="16" height="16" rx="4"/>
+        <circle cx="10" cy="10" r="4"/>
+        <circle cx="14.5" cy="5.5" r="1" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="nav-dot"></span>
+    </div>
+    <!-- Clinical -->
+    <div class="nav-item" id="nav-clinical" onclick="showPage('clinical')" title="Clinical">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M9 3H5a1 1 0 00-1 1v13a1 1 0 001 1h10a1 1 0 001-1V8l-4-5z"/>
+        <polyline points="9,3 9,8 15,8"/>
+        <line x1="7" y1="11" x2="13" y2="11"/>
+        <line x1="7" y1="14" x2="10" y2="14"/>
+      </svg>
+      <span class="nav-dot"></span>
+    </div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="nav-item" title="Settings">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="10" cy="10" r="3"/>
+        <path d="M10 1v2M10 17v2M1 10h2M17 10h2M3.22 3.22l1.41 1.41M15.36 15.36l1.41 1.41M3.22 16.78l1.41-1.41M15.36 4.64l1.41-1.41"/>
+      </svg>
+    </div>
+    <div class="nav-item" title="More">
+      <svg viewBox="0 0 20 20" fill="currentColor">
+        <circle cx="10" cy="4" r="1.5"/><circle cx="10" cy="10" r="1.5"/><circle cx="10" cy="16" r="1.5"/>
+      </svg>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ MAIN WRAPPER ══ -->
+<div class="main-wrapper">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left" id="headerLeft">
+      <span class="header-dot"></span>
+      <span style="font-weight:600">Dudum chiro</span>
+    </div>
+    <div class="header-right">
+      <div class="header-icon-btn" title="Comments">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H2a1 1 0 00-1 1v8a1 1 0 001 1h3l3 3 3-3h3a1 1 0 001-1V3a1 1 0 00-1-1z"/>
+        </svg>
+      </div>
+      <button class="claudia-btn">
+        <span class="claudia-btn-star">✦</span> Claudia
+      </button>
+      <div class="header-icon-btn" title="Notifications">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M8 1a5 5 0 015 5v3l1.5 2H1.5L3 9V6a5 5 0 015-5zM6 13.5a2 2 0 004 0"/>
+        </svg>
+      </div>
+      <div class="avatar" id="headerAvatar">DC</div>
+    </div>
+  </header>
+
+  <!-- Page area -->
+  <div class="page-area">
+    <div class="page-content">
+
+      <!-- ══════════ DASHBOARD ══════════ -->
+      <div id="page-dashboard" class="page">
+        <div class="dash-body">
+          <div class="dash-hero">
+            <div class="dash-logo-wrap">
+              <svg width="48" height="48" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="13" stroke="#f97316" stroke-width="2.2"/>
+                <circle cx="16" cy="16" r="7" stroke="#f97316" stroke-width="2.2"/>
+                <circle cx="16" cy="16" r="2.5" fill="#f97316"/>
+                <line x1="16" y1="3" x2="16" y2="9" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="16" y1="23" x2="16" y2="29" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="3" y1="16" x2="9" y2="16" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="23" y1="16" x2="29" y2="16" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="dash-greeting" id="dashGreeting">Good morning, Dudum</div>
+            <div class="dash-sub">Here's your business at a glance:</div>
+            <div class="dash-total-label">TOTAL SALES</div>
+            <div class="dash-total-value">$86,000</div>
+            <div class="dash-change up">+43.3% vs last month</div>
+          </div>
+
+          <div class="chart-wrap">
+            <div style="position:relative">
+              <svg class="chart-svg" viewBox="0 0 800 110" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.15"/>
+                    <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <!-- Grid lines -->
+                <line x1="0" y1="90" x2="800" y2="90" stroke="#e5e7eb" stroke-width="1"/>
+                <line x1="0" y1="55" x2="800" y2="55" stroke="#e5e7eb" stroke-width="1"/>
+                <line x1="0" y1="20" x2="800" y2="20" stroke="#e5e7eb" stroke-width="1"/>
+                <!-- Area fill -->
+                <path d="M0,88 C50,86 90,84 130,80 C180,74 220,55 270,52 C320,49 360,70 410,68 C460,66 490,75 540,72 C600,68 650,30 700,18 C730,12 760,14 800,10 L800,95 L0,95 Z" fill="url(#cg)"/>
+                <!-- Line -->
+                <path d="M0,88 C50,86 90,84 130,80 C180,74 220,55 270,52 C320,49 360,70 410,68 C460,66 490,75 540,72 C600,68 650,30 700,18 C730,12 760,14 800,10" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linejoin="round"/>
+                <!-- Dots at data points -->
+                <circle cx="700" cy="18" r="4" fill="#22d3ee" stroke="white" stroke-width="2"/>
+                <circle cx="800" cy="10" r="4" fill="#22d3ee" stroke="white" stroke-width="2"/>
+              </svg>
+              <!-- Tooltip -->
+              <div style="position:absolute;top:10px;right:90px;background:white;border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08)">
+                <div style="color:#6b7280;margin-bottom:2px">May 7, 2026</div>
+                <div style="font-weight:700;font-size:14px">$10,571</div>
+              </div>
+            </div>
+            <div class="chart-x-labels">
+              <span class="chart-x-label">FEB 9</span>
+              <span class="chart-x-label">MAR 26</span>
+              <span class="chart-x-label">MAY 10</span>
+            </div>
+          </div>
+
+          <div class="dash-cards" id="dashCards"><!-- populated by JS --></div>
+        </div>
+      </div>
+
+      <!-- ══════════ LEADERSHIP SCORECARD ══════════ -->
+      <div id="page-leadership" class="page active">
+        <div class="sc-controls">
+          <button class="sc-nav-btn">&#8592;</button>
+          <button class="sc-nav-btn">&#8594;</button>
+          <button class="sc-today">TODAY</button>
+          <div class="sc-tabs">
+            <button class="sc-tab" onclick="setSCView('monthly',this)">MONTHLY</button>
+            <button class="sc-tab active" onclick="setSCView('weekly',this)">WEEKLY</button>
+            <button class="sc-tab" onclick="setSCView('daily',this)">DAILY</button>
+          </div>
+          <div class="sc-toggle">
+            <div class="toggle-switch"><div class="toggle-knob"></div></div>
+            <span>GROUP BY MONTH</span>
+          </div>
+          <button class="sc-quarter-btn">
+            THIS QUARTER
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 6,8 10,4"/></svg>
+          </button>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <div class="sc-icon-btn">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="12" height="11" rx="1"/><line x1="1" y1="6" x2="13" y2="6"/><line x1="4" y1="1" x2="4" y2="3"/><line x1="10" y1="1" x2="10" y2="3"/></svg>
+            </div>
+            <div class="sc-icon-btn">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l3-3 2 2 5-7"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="sc-table-wrap">
+          <table class="sc-table">
+            <thead>
+              <tr>
+                <th>METRIC</th>
+                <th class="col-actuals">APR 2026<br><span style="font-weight:400;color:var(--muted)">ACTUALS</span></th>
+                <th>APR 2026<br><span style="font-weight:400">GOALS</span></th>
+                <th>W18<br><span style="font-weight:400">MAY 1–3</span></th>
+                <th>W19<br><span style="font-weight:400">MAY 4–10</span></th>
+                <th>W20<br><span style="font-weight:400">MAY 11–17</span></th>
+                <th>W21<br><span style="font-weight:400">MAY 18–24</span></th>
+                <th>W22<br><span style="font-weight:400">MAY 25–31</span></th>
+              </tr>
+            </thead>
+            <tbody id="sc-body-leadership"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══════════ FINANCE SCORECARD ══════════ -->
+      <div id="page-finance" class="page">
+        <div class="sc-controls">
+          <button class="sc-nav-btn">&#8592;</button>
+          <button class="sc-nav-btn">&#8594;</button>
+          <button class="sc-today">TODAY</button>
+          <div class="sc-tabs">
+            <button class="sc-tab">MONTHLY</button>
+            <button class="sc-tab active">WEEKLY</button>
+            <button class="sc-tab">DAILY</button>
+          </div>
+          <div class="sc-toggle">
+            <div class="toggle-switch"><div class="toggle-knob"></div></div>
+            <span>GROUP BY MONTH</span>
+          </div>
+          <button class="sc-quarter-btn">THIS QUARTER <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 6,8 10,4"/></svg></button>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <div class="sc-icon-btn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="12" height="11" rx="1"/><line x1="1" y1="6" x2="13" y2="6"/><line x1="4" y1="1" x2="4" y2="3"/><line x1="10" y1="1" x2="10" y2="3"/></svg></div>
+            <div class="sc-icon-btn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l3-3 2 2 5-7"/></svg></div>
+          </div>
+        </div>
+        <div class="sc-table-wrap">
+          <table class="sc-table">
+            <thead>
+              <tr>
+                <th>METRIC</th>
+                <th class="col-actuals">APR 2026<br><span style="font-weight:400;color:var(--muted)">ACTUALS</span></th>
+                <th>APR 2026<br><span style="font-weight:400">GOALS</span></th>
+                <th>W18<br><span style="font-weight:400">MAY 1–3</span></th>
+                <th>W19<br><span style="font-weight:400">MAY 4–10</span></th>
+                <th>W20<br><span style="font-weight:400">MAY 11–17</span></th>
+                <th>W21<br><span style="font-weight:400">MAY 18–24</span></th>
+                <th>W22<br><span style="font-weight:400">MAY 25–31</span></th>
+              </tr>
+            </thead>
+            <tbody id="sc-body-finance"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══════════ TEAM / ANALYTICS ══════════ -->
+      <div id="page-team" class="page">
+        <div class="team-body">
+          <div class="team-header-card">
+            <div class="team-lead-wrap">
+              <div class="avatar" style="width:36px;height:36px;font-size:12px">DC</div>
+              <div>
+                <div class="team-lead-label">TEAM LEAD</div>
+                <div class="team-lead-name">Dudum chiro</div>
+              </div>
+            </div>
+            <button class="team-members-btn">MEMBERS <span style="font-size:16px;line-height:1">+</span></button>
+          </div>
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="team-card-header">
+                <div class="team-card-title">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,12 5,8 8,10 14,3"/></svg>
+                  Leadership: Core Data
+                </div>
+                <button class="btn btn-secondary btn-sm">✎ Edit</button>
+              </div>
+              <div class="team-card-body">
+                <div class="team-empty">No charts yet — click "Edit" to add one</div>
+              </div>
+            </div>
+            <div class="team-card">
+              <div class="team-card-header">
+                <div class="team-card-title">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="11" rx="1"/><line x1="5" y1="7" x2="11" y2="7"/><line x1="5" y1="10" x2="9" y2="10"/></svg>
+                  Scorecards
+                </div>
+                <div class="team-card-count">2 Scorecards</div>
+              </div>
+              <div class="team-card-body">
+                <div class="scorecard-link" onclick="showPage('team-scorecard-2q')">
+                  <div class="scorecard-link-left">
+                    <div class="scorecard-link-icon">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="#f97316" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="3"/><circle cx="8" cy="8" r="1" fill="#f97316" stroke="none"/></svg>
+                    </div>
+                    <div>
+                      <div class="scorecard-link-name">2q2026</div>
+                      <div class="scorecard-link-meta">0 metrics in 0 sections</div>
+                    </div>
+                  </div>
+                  <button class="open-btn">Open</button>
+                </div>
+                <div class="scorecard-link" onclick="showPage('leadership')">
+                  <div class="scorecard-link-left">
+                    <div class="scorecard-link-icon bar">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1"/><line x1="2" y1="7" x2="14" y2="7"/><line x1="5" y1="3" x2="5" y2="13"/></svg>
+                    </div>
+                    <div>
+                      <div class="scorecard-link-name">Leadership Scorecard</div>
+                      <div class="scorecard-link-meta">9 metrics in 3 sections</div>
+                    </div>
+                  </div>
+                  <button class="open-btn">Open</button>
+                </div>
+              </div>
+            </div>
+            <div class="team-card" style="grid-column:1/-1">
+              <div class="team-card-header">
+                <div class="team-card-title">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8"/><line x1="8" y1="8" x2="10" y2="10"/></svg>
+                  Active Quarterly Goals
+                </div>
+                <div class="team-card-count">1 Goal</div>
+              </div>
+              <div class="team-card-body">
+                <div class="goal-card">
+                  <div class="goal-title">
+                    Total Sales Q2 2026
+                    <div class="goal-dot"></div>
+                  </div>
+                  <div class="goal-vs">$10,500 vs goal of $1,750,000</div>
+                  <div class="goal-progress-label">
+                    <span class="goal-progress-text">Progress ⓘ</span>
+                    <span class="goal-progress-behind">$6,088 under pace</span>
+                  </div>
+                  <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:0.6%"></div></div>
+                  <div class="goal-team">
+                    <div class="avatar" style="width:20px;height:20px;font-size:9px">DC</div>
+                    Dudum chiro
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ INSTAGRAM ══════════ -->
+      <div id="page-instagram" class="page">
+        <div class="ig-page">
+          <div class="ig-header">
+            <div class="ig-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="url(#igGrad)" stroke-width="2">
+                <defs>
+                  <linearGradient id="igGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#833ab4"/>
+                    <stop offset="50%" stop-color="#fd1d1d"/>
+                    <stop offset="100%" stop-color="#fcb045"/>
+                  </linearGradient>
+                </defs>
+                <rect x="2" y="2" width="20" height="20" rx="5"/>
+                <circle cx="12" cy="12" r="4.5"/>
+                <circle cx="17.5" cy="6.5" r="1.2" fill="#fd1d1d" stroke="none"/>
+              </svg>
+              Instagram Metrics
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="ig-connect-btn" id="igConnectBtn" onclick="showIGSetup()">⚡ Connect Instagram</button>
+            </div>
+          </div>
+
+          <div class="ig-status" id="igStatus">
+            <span class="ig-status-dot" id="igStatusDot"></span>
+            <span id="igStatusText">Not connected — enter your access token to pull live data</span>
+          </div>
+
+          <!-- Connect banner (shown when not connected) -->
+          <div class="ig-connect-banner" id="igBanner">
+            <h3>Connect your Instagram Business Account</h3>
+            <p>Paste your Instagram Graph API access token below to pull live followers, reach, engagement and more.</p>
+            <div class="ig-token-form">
+              <input class="ig-token-input" id="igTokenInput" type="password" placeholder="Instagram Access Token">
+              <input class="ig-token-input" id="igAccountInput" type="text" placeholder="Account ID (optional)" style="max-width:160px">
+              <button class="btn btn-primary" onclick="connectIG()">Connect</button>
+            </div>
+          </div>
+
+          <!-- KPI cards -->
+          <div class="ig-kpi-grid">
+            <div class="ig-kpi-card">
+              <div class="ig-kpi-label">Followers</div>
+              <div class="ig-kpi-val" id="ig-followers">—</div>
+              <div class="ig-kpi-change flat" id="ig-followers-chg"></div>
+            </div>
+            <div class="ig-kpi-card">
+              <div class="ig-kpi-label">Reach (30 days)</div>
+              <div class="ig-kpi-val" id="ig-reach">—</div>
+              <div class="ig-kpi-change flat" id="ig-reach-chg"></div>
+            </div>
+            <div class="ig-kpi-card">
+              <div class="ig-kpi-label">Impressions (30 days)</div>
+              <div class="ig-kpi-val" id="ig-impressions">—</div>
+              <div class="ig-kpi-change flat" id="ig-impressions-chg"></div>
+            </div>
+            <div class="ig-kpi-card">
+              <div class="ig-kpi-label">Engagement Rate</div>
+              <div class="ig-kpi-val" id="ig-engagement">—</div>
+              <div class="ig-kpi-change flat" id="ig-engagement-chg"></div>
+            </div>
+          </div>
+
+          <div class="ig-detail-grid">
+            <div class="ig-detail-card">
+              <div class="ig-detail-label">Total Posts</div>
+              <div class="ig-detail-val" id="ig-posts">—</div>
+            </div>
+            <div class="ig-detail-card">
+              <div class="ig-detail-label">Avg Likes / Post</div>
+              <div class="ig-detail-val" id="ig-avg-likes">—</div>
+            </div>
+            <div class="ig-detail-card">
+              <div class="ig-detail-label">Avg Comments / Post</div>
+              <div class="ig-detail-val" id="ig-avg-comments">—</div>
+            </div>
+            <div class="ig-detail-card">
+              <div class="ig-detail-label">Profile Views (7 days)</div>
+              <div class="ig-detail-val" id="ig-profile-views">—</div>
+            </div>
+            <div class="ig-detail-card">
+              <div class="ig-detail-label">Website Clicks (7 days)</div>
+              <div class="ig-detail-val" id="ig-website-clicks">—</div>
+            </div>
+            <div class="ig-detail-card">
+              <div class="ig-detail-label">Story Views (last 10)</div>
+              <div class="ig-detail-val" id="ig-story-views">—</div>
+            </div>
+          </div>
+
+          <div class="ig-posts-section">
+            <div class="ig-posts-title">Recent Posts</div>
+            <div class="ig-posts-grid" id="igPostsGrid">
+              <!-- placeholders -->
+              <div class="ig-post-thumb"><div class="ig-post-thumb-placeholder">📷</div></div>
+              <div class="ig-post-thumb"><div class="ig-post-thumb-placeholder">📷</div></div>
+              <div class="ig-post-thumb"><div class="ig-post-thumb-placeholder">📷</div></div>
+              <div class="ig-post-thumb"><div class="ig-post-thumb-placeholder">📷</div></div>
+              <div class="ig-post-thumb"><div class="ig-post-thumb-placeholder">📷</div></div>
+              <div class="ig-post-thumb"><div class="ig-post-thumb-placeholder">📷</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ CLINICAL ══════════ -->
+      <div id="page-clinical" class="page">
+        <div class="clinical-stats" id="clinStats"><!-- populated --></div>
+        <div class="clin-actions">
+          <div class="clin-title">Patient Treatment Tracker</div>
+          <div class="clin-btns">
+            <button class="btn btn-secondary btn-sm" onclick="resetToday()">Reset Today</button>
+            <button class="btn btn-secondary btn-sm" id="syncBtn" onclick="syncGHL()">⟳ Sync GHL</button>
+            <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Add Patient</button>
+          </div>
+        </div>
+        <div class="pat-table-wrap">
+          <table class="pat-table">
+            <thead>
+              <tr>
+                <th>Patient</th><th>Week</th><th>Progress</th>
+                <th class="ms-group">Visit 2<br><span style="font-weight:400;color:var(--blue);font-size:9px">exp 10%</span></th>
+                <th class="ms-group">Visit 5<br><span style="font-weight:400;color:var(--blue);font-size:9px">exp 15%</span></th>
+                <th class="ms-group">Visit 8<br><span style="font-weight:400;color:var(--blue);font-size:9px">exp 20%</span></th>
+                <th class="ms-group">Visit 12<br><span style="font-weight:400;color:var(--blue);font-size:9px">exp 33%</span></th>
+                <th class="ms-group">Visit 16<br><span style="font-weight:400;color:var(--blue);font-size:9px">exp 50%</span></th>
+                <th>Collections</th><th>MRI</th><th>Today</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="patBody">
+              <tr><td colspan="12"><div class="empty-state"><div class="ei">📋</div><h3>Loading...</h3></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /page-area -->
+</div><!-- /main-wrapper -->
+
+<!-- ══ CLAUDIA SIDEBAR ══ -->
+<aside class="claudia-sidebar">
+  <div class="claudia-top">
+    <svg class="claudia-logo" viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="13" stroke="#f97316" stroke-width="2.2"/>
+      <circle cx="16" cy="16" r="7" stroke="#f97316" stroke-width="2.2"/>
+      <circle cx="16" cy="16" r="2.5" fill="#f97316"/>
+      <line x1="16" y1="3" x2="16" y2="9" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="16" y1="23" x2="16" y2="29" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="3" y1="16" x2="9" y2="16" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="23" y1="16" x2="29" y2="16" stroke="#f97316" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+    <div class="claudia-greeting">What's on your mind, Dudum?</div>
+    <div class="claudia-chips">
+      <div class="claudia-chip">How are we pacing this month?</div>
+      <div class="claudia-chip">What needs my attention?</div>
+      <div class="claudia-chip">Walk me through our numbers</div>
+      <div class="claudia-chip">Review our landing page</div>
+    </div>
+  </div>
+  <div class="claudia-input-wrap">
+    <input class="claudia-input" type="text" placeholder="Ask something...">
+    <div class="claudia-mic">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="1" width="6" height="8" rx="3"/><path d="M2 7a5 5 0 0010 0"/><line x1="7" y1="12" x2="7" y2="14"/></svg>
+    </div>
+    <div class="claudia-send">
+      <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="1.5"><line x1="6" y1="10" x2="6" y2="2"/><polyline points="2,6 6,2 10,6"/></svg>
+    </div>
+  </div>
+  <div class="claudia-hint">Enter to send · Shift+Enter for new line</div>
+</aside>
+
+<!-- ══ MODALS ══ -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="editModalTitle">Edit Patient</div>
+      <button class="modal-x" onclick="closeModal('editModal')">&#215;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editPatientId">
+      <div class="form-grid">
+        <div class="form-group"><label>Patient Name</label><input type="text" id="editName"></div>
+        <div class="form-group"><label>Phone</label><input type="text" id="editPhone"></div>
+        <div class="form-group"><label>Treatment Start Date</label><input type="date" id="editStartDate"></div>
+        <div class="form-group"><label>Current Week #</label><input type="number" id="editWeek" min="1" max="52"></div>
+        <div class="form-group"><label>Visits Completed</label><input type="number" id="editVisitsCompleted" min="0"></div>
+        <div class="form-group"><label>Visits Prescribed</label><input type="number" id="editVisitsPrescribed" min="1"></div>
+        <div class="form-group"><label>Collections Status</label>
+          <select id="editCollections">
+            <option value="Not Set">Not Set</option>
+            <option value="Paid in Full">Paid in Full</option>
+            <option value="Payment Plan">Payment Plan</option>
+            <option value="Overdue">Overdue</option>
+          </select>
+        </div>
+        <div class="form-group"><label>MRI Status</label>
+          <select id="editMRI">
+            <option value="Not Ordered">Not Ordered</option>
+            <option value="Ordered - Pending">Ordered – Pending</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Consecutive Missed Appts</label><input type="number" id="editMissed" min="0"></div>
+        <div class="form-group"><label>Notes</label><input type="text" id="editNotes"></div>
+      </div>
+      <div class="ms-modal-section">
+        <div class="ms-modal-title">Improvement % at Visit Milestones</div>
+        <div class="ms-modal-grid">
+          <div class="ms-modal-wrap"><div class="ms-modal-lbl">Visit 2 <span class="exp">(exp 10%)</span></div><input type="number" id="editV2" min="0" max="100" placeholder="%" oninput="colorMI(this,10)"></div>
+          <div class="ms-modal-wrap"><div class="ms-modal-lbl">Visit 5 <span class="exp">(exp 15%)</span></div><input type="number" id="editV5" min="0" max="100" placeholder="%" oninput="colorMI(this,15)"></div>
+          <div class="ms-modal-wrap"><div class="ms-modal-lbl">Visit 8 <span class="exp">(exp 20%)</span></div><input type="number" id="editV8" min="0" max="100" placeholder="%" oninput="colorMI(this,20)"></div>
+          <div class="ms-modal-wrap"><div class="ms-modal-lbl">Visit 12 <span class="exp">(exp 33%)</span></div><input type="number" id="editV12" min="0" max="100" placeholder="%" oninput="colorMI(this,33)"></div>
+          <div class="ms-modal-wrap"><div class="ms-modal-lbl">Visit 16 <span class="exp">(exp 50%)</span></div><input type="number" id="editV16" min="0" max="100" placeholder="%" oninput="colorMI(this,50)"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-ftr">
+      <button class="btn btn-danger btn-sm" onclick="removePatient()">Remove Patient</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="savePatient()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addModal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-hdr">
+      <div class="modal-title">Add Patient</div>
+      <button class="modal-x" onclick="closeModal('addModal')">&#215;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid" style="grid-template-columns:1fr">
+        <div class="form-group"><label>Patient Name *</label><input type="text" id="addName" autofocus></div>
+        <div class="form-group"><label>Phone</label><input type="text" id="addPhone"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="addEmail"></div>
+      </div>
+    </div>
+    <div class="modal-ftr" style="justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAddPatient()">Add Patient</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── Constants ─────────────────────────────────────────────────────────────────
+const MILESTONES = [
+  {key:'visit2_pct', expected:10, visitNum:2},
+  {key:'visit5_pct', expected:15, visitNum:5},
+  {key:'visit8_pct', expected:20, visitNum:8},
+  {key:'visit12_pct',expected:33, visitNum:12},
+  {key:'visit16_pct',expected:50, visitNum:16},
+];
+
+let patients = [];
+let scorecards = {leadership:[], finance:[]};
+let currentPage = 'leadership';
+
+// ── Greeting ──────────────────────────────────────────────────────────────────
+function setGreeting(){
+  const h = new Date().getHours();
+  const g = h<12?'morning':h<17?'afternoon':'evening';
+  document.getElementById('dashGreeting').textContent = `Good ${g}, Dudum`;
+}
+setGreeting();
+
+// ── Page Navigation ───────────────────────────────────────────────────────────
+const NAV_MAP = {
+  dashboard:'nav-dashboard', leadership:'nav-scorecards',
+  finance:'nav-finance', team:'nav-team',
+  instagram:'nav-instagram', clinical:'nav-clinical'
+};
+const BREADCRUMBS = {
+  dashboard: null,
+  leadership: ['Leadership','Leadership Scorecard'],
+  finance: ['Finance','Finance Scorecard'],
+  team: ['Analytics','Leadership Team'],
+  instagram: ['Analytics','Instagram Metrics'],
+  clinical: ['Clinical','Patient Tracker'],
+};
+
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const el = document.getElementById('page-'+page);
+  if(el) el.classList.add('active');
+  const navId = NAV_MAP[page];
+  if(navId) document.getElementById(navId).classList.add('active');
+  currentPage = page;
+  const bc = BREADCRUMBS[page];
+  const hl = document.getElementById('headerLeft');
+  if(!bc){
+    hl.innerHTML = '<span class="header-dot"></span><span style="font-weight:600">Dudum chiro</span>';
+  } else {
+    hl.innerHTML = `<div class="breadcrumb">
+      <span class="breadcrumb-parent" onclick="showPage('team')">${bc[0]}</span>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">${bc[1]}</span>
+    </div>`;
+  }
+}
+
+// ── Scorecard toggle ──────────────────────────────────────────────────────────
+function setSCView(view, btn){
+  btn.closest('.sc-tabs').querySelectorAll('.sc-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── Format helpers ────────────────────────────────────────────────────────────
+function fmtVal(val, unit){
+  if(!val && val!==0) return '';
+  const n = parseFloat(String(val).replace(/[^0-9.-]/g,''));
+  if(isNaN(n)) return val;
+  if(unit==='$') return '$'+n.toLocaleString();
+  if(unit==='%') return n+'%';
+  return n.toLocaleString();
+}
+
+function pctColor(actual, goal){
+  if(!actual || !goal) return 'empty';
+  const a=parseFloat(actual), g=parseFloat(goal);
+  if(isNaN(a)||isNaN(g)||g===0) return 'empty';
+  if(a>=g)       return 'green';
+  if(a>=g*0.75)  return 'yellow';
+  return 'red';
+}
+
+function valClass(val, goals, col){
+  if(!val && val!==0) return 'val-empty';
+  if(col==='actuals'){
+    if(!goals) return 'val-red';
+    const v=parseFloat(String(val).replace(/[^0-9.-]/g,'')||0);
+    const g=parseFloat(String(goals).replace(/[^0-9.-]/g,'')||0);
+    return v < g ? 'val-red' : 'val-green';
+  }
+  if(col==='goals') return 'val-black';
+  return 'val-green';
+}
+
+function renderPctPill(val, goalVal){
+  if(!val) return `<span class="ms-pill empty">–</span>`;
+  const color = pctColor(val, goalVal);
+  return `<span class="ms-pill ${color}">${parseFloat(val)}%</span>`;
+}
+
+// ── Scorecard Rendering ───────────────────────────────────────────────────────
+async function loadScorecard(name){
+  const res = await fetch(`/api/scorecard/${name}`);
+  scorecards[name] = await res.json();
+  renderScorecard(name);
+}
+
+function renderScorecard(name){
+  const rows = scorecards[name];
+  const tbody = document.getElementById(`sc-body-${name}`);
+  if(!tbody) return;
+
+  // Group by section
+  const sections = {};
+  rows.forEach(r=>{
+    if(!sections[r.section]) sections[r.section]=[];
+    sections[r.section].push(r);
+  });
+
+  let html='';
+  Object.entries(sections).forEach(([section, metrics])=>{
+    html += `<tr class="sc-section-row">
+      <td colspan="8">
+        <div class="sc-section-label" onclick="toggleSection(this)">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,4 6,8 10,4"/></svg>
+          ${section} <span class="sc-section-count">(${metrics.length})</span>
+        </div>
+      </td>
+    </tr>`;
+
+    metrics.forEach(m=>{
+      const ownerClass = m.owner==='KH' ? 'owner-kh' : m.owner==='DC2' ? 'owner-dc2' : 'owner-dc';
+      const cols = ['actuals','goals','w18','w19','w20','w21','w22'];
+      const colGoals = m.goals;
+      const isPct = m.unit === '%';
+      const cellsHtml = cols.map(col=>{
+        const v = m[col];
+        const display = fmtVal(v, m.unit);
+        const isEmpty = !display;
+
+        // % metrics: pill with green/yellow/red vs goal
+        if(isPct){
+          if(col === 'goals'){
+            return `<td class="sc-cell val-black" onclick="startCellEdit(this,${m.id},'${col}','${name}')">
+              ${isEmpty ? '' : `<span class="sc-display">${display}</span>`}
+            </td>`;
+          }
+          const goalVal = m.goals;
+          return `<td class="sc-cell" style="text-align:center" onclick="startCellEdit(this,${m.id},'${col}','${name}')">
+            ${isEmpty ? `<span class="ms-pill empty">–</span>` : renderPctPill(v, goalVal)}
+          </td>`;
+        }
+
+        // Non-% metrics: colored text
+        const cls = valClass(v, colGoals, col);
+        return `<td class="sc-cell ${cls}" onclick="startCellEdit(this,${m.id},'${col}','${name}')">
+          ${isEmpty ? '' : `<span class="sc-display">${display}</span>`}
+        </td>`;
+      }).join('');
+
+      html += `<tr>
+        <td>
+          <div class="metric-name-cell">
+            <div class="owner-avatar ${ownerClass}">${m.owner}</div>
+            <span class="metric-name-text">${esc(m.metric_name)}</span>
+            <button class="metric-icon-btn" onclick="deleteMetric(event,${m.id},'${name}')">✕</button>
+          </div>
+        </td>
+        ${cellsHtml}
+      </tr>`;
+    });
+  });
+
+  // Add metric rows per section
+  html += `<tr class="sc-add-row">
+    <td colspan="8">
+      <button class="sc-add-btn" onclick="promptAddMetric('${name}')">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" style="width:12px;height:12px">
+          <line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/>
+        </svg>
+        Add metric
+      </button>
+    </td>
+  </tr>`;
+
+  tbody.innerHTML = html;
+}
+
+function toggleSection(el){
+  el.classList.toggle('collapsed');
+  let row = el.closest('tr').nextSibling;
+  while(row && !row.classList.contains('sc-section-row') && !row.classList.contains('sc-add-row')){
+    row.style.display = el.classList.contains('collapsed') ? 'none' : '';
+    row = row.nextSibling;
+  }
+}
+
+function startCellEdit(td, metricId, col, scName){
+  if(td.querySelector('input')) return;
+  const display = td.querySelector('.sc-display');
+  const currentText = display ? display.textContent.replace(/[$,%]/g,'').replace(/,/g,'').trim() : '';
+  td.classList.add('editing');
+  const input = document.createElement('input');
+  input.className = 'sc-cell-input';
+  input.type = 'text';
+  input.value = currentText;
+  input.placeholder = '—';
+  td.innerHTML = '';
+  td.appendChild(input);
+  input.focus(); input.select();
+
+  const save = async ()=>{
+    const newVal = input.value.trim();
+    const res = await fetch(`/api/scorecard/metric/${metricId}`,{
+      method:'PUT',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({[col]:newVal})
+    });
+    const updated = await res.json();
+    const idx = scorecards[scName].findIndex(m=>m.id===metricId);
+    if(idx!==-1) scorecards[scName][idx]=updated;
+    renderScorecard(scName);
+  };
+
+  input.onkeydown = e=>{
+    if(e.key==='Enter'){e.preventDefault();save();}
+    if(e.key==='Escape'){renderScorecard(scName);}
+  };
+  input.onblur = ()=>setTimeout(()=>{if(document.contains(input)) save();},100);
+}
+
+async function deleteMetric(e, id, scName){
+  e.stopPropagation();
+  if(!confirm('Remove this metric?')) return;
+  await fetch(`/api/scorecard/metric/${id}`,{method:'DELETE'});
+  scorecards[scName]=scorecards[scName].filter(m=>m.id!==id);
+  renderScorecard(scName);
+  showToast('Metric removed','success');
+}
+
+function promptAddMetric(scName){
+  const name = prompt('Metric name:');
+  if(!name||!name.trim()) return;
+  const section = prompt('Section (MARKETING / FINANCE / SALES / METRICS):', scName==='finance'?'METRICS':'SALES');
+  if(!section) return;
+  const unit = prompt('Unit ($ or % or leave blank):', '');
+  addMetric(scName, name.trim(), section.trim().toUpperCase(), unit||'');
+}
+
+async function addMetric(scName, metricName, section, unit){
+  const res = await fetch(`/api/scorecard/${scName}/add`,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({metric_name:metricName, section, unit})
+  });
+  const m = await res.json();
+  scorecards[scName].push(m);
+  renderScorecard(scName);
+  showToast(`${metricName} added`,'success');
+}
+
+// ── Dashboard metrics ─────────────────────────────────────────────────────────
+async function loadDashboard(){
+  const res = await fetch('/api/dashboard');
+  const data = await res.json();
+  const cards = document.getElementById('dashCards');
+  cards.innerHTML = data.metrics.map(m=>{
+    const hasDot = m.change_dir==='red'||m.change_dir==='green';
+    const dotClass = m.change_dir==='red'?'red':'green';
+    const isUp = m.change_pct && parseFloat(m.change_pct)>0;
+    const prefix = m.unit==='$'?'$':'';
+    const valDisplay = m.value ? prefix+parseFloat(m.value).toLocaleString() : null;
+    return `<div class="dash-card">
+      <div class="dash-card-label">
+        ${hasDot?`<span class="dash-card-dot ${dotClass}"></span>`:''}
+        ${esc(m.metric_name)}
+      </div>
+      ${valDisplay
+        ? `<div class="dash-card-value">${valDisplay}</div>
+           ${m.change_pct?`<div class="dash-card-change ${isUp?'up':'down'}">${isUp?'↑':'↓'}${Math.abs(parseFloat(m.change_pct))}%</div>`:''}
+          `
+        : `<div class="dash-card-empty">—</div>`
+      }
+    </div>`;
+  }).join('');
+}
+
+// ── Clinical ──────────────────────────────────────────────────────────────────
+async function loadPatients(){
+  try{
+    const res = await fetch('/api/patients');
+    patients = await res.json();
+    renderClinical();
+  }catch(e){showToast('Failed to load patients','error');}
+}
+
+function renderClinical(){
+  updateClinStats();
+  renderPatTable();
+}
+
+function updateClinStats(){
+  const total = patients.length;
+  const scheduled = patients.filter(p=>p.today_status==='scheduled').length;
+  const showed = patients.filter(p=>p.today_status==='showed').length;
+  const noshow = patients.filter(p=>p.today_status==='no_show').length;
+  const dropout = patients.filter(p=>(p.missed_appointments||0)>=2).length;
+  const overdue = patients.filter(p=>p.collections_status==='Overdue').length;
+  document.getElementById('clinStats').innerHTML = `
+    <div class="clin-stat s-active"><div class="clin-stat-val">${total}</div><div class="clin-stat-label">Active Patients</div></div>
+    <div class="clin-stat s-blue"><div class="clin-stat-val" style="color:var(--blue)">${scheduled}</div><div class="clin-stat-label">Scheduled Today</div></div>
+    <div class="clin-stat s-green"><div class="clin-stat-val">${showed}</div><div class="clin-stat-label">Showed Up</div></div>
+    <div class="clin-stat s-yellow"><div class="clin-stat-val">${noshow}</div><div class="clin-stat-label">No Shows</div></div>
+    <div class="clin-stat s-red"><div class="clin-stat-val">${dropout}</div><div class="clin-stat-label">Dropout Risk</div></div>
+    <div class="clin-stat s-red"><div class="clin-stat-val">${overdue}</div><div class="clin-stat-label">Overdue</div></div>
+  `;
+}
+
+function msClass(val, exp){
+  if(val===null||val===undefined||val==='') return 'empty';
+  const v=parseFloat(val);
+  if(v>=exp)          return 'green';   // at or above target
+  if(v>=exp*0.75)     return 'yellow';  // within 25% of target — close
+  return 'red';                          // too far below
+}
+
+function patientColor(p){
+  const done = p.visits_completed||0;
+  const rank={green:1,yellow:2,red:3};
+  let worst=null;
+  for(const m of MILESTONES){
+    if(done<m.visitNum) continue;
+    const v=p[m.key];
+    if(v===null||v===undefined||v==='') continue;
+    const cls=msClass(v,m.expected);
+    if(cls==='empty') continue;
+    if(!worst||rank[cls]>rank[worst]) worst=cls;
+  }
+  return worst;
+}
+
+function msPill(p, m){
+  const v=p[m.key];
+  let disp;
+  if(v===null||v===undefined||v===''){
+    disp=`<span class="ms-pill empty">–</span>`;
+  } else {
+    // Color whenever a value is entered — green/yellow/red vs expected
+    disp=`<span class="ms-pill ${msClass(v,m.expected)}">${parseFloat(v).toFixed(0)}%</span>`;
+  }
+  return `<div class="ms-inner" onclick="startMSEdit(this,'${p.id}','${m.key}',${m.expected},${m.visitNum})" style="display:inline-block;width:100%">${disp}</div>`;
+}
+
+function startMSEdit(wrap, pid, field, exp, visitNum){
+  if(wrap.querySelector('input')) return;
+  const pill=wrap.querySelector('.ms-pill');
+  const cur=pill?(pill.classList.contains('empty')?'':pill.textContent.replace('%','').trim()):'';
+  const input=document.createElement('input');
+  input.type='number'; input.min=0; input.max=100;
+  input.value=cur; input.className='ms-inline'; input.placeholder='%';
+  if(cur!=='') applyMSColor(input,parseFloat(cur),exp);
+  input.oninput=()=>{input.className='ms-inline';if(input.value!=='') applyMSColor(input,parseFloat(input.value),exp);}
+  input.onkeydown=async e=>{
+    if(e.key==='Enter'){e.preventDefault();await patchPatient(pid,{[field]:input.value===''?null:parseFloat(input.value)});}
+    if(e.key==='Escape') renderClinical();
+  };
+  input.onblur=()=>setTimeout(()=>{if(document.contains(input)) renderClinical();},150);
+  wrap.innerHTML=''; wrap.appendChild(input); input.focus(); input.select();
+}
+
+function applyMSColor(inp,v,exp){
+  const c=msClass(v,exp);
+  inp.className='ms-inline'+(c!=='empty'?' m-'+c:'');
+}
+
+function collBadge(s){
+  const m={'Paid in Full':'paid','Payment Plan':'plan','Overdue':'overdue','Not Set':'notset'};
+  return `<span class="badge ${m[s]||'notset'}">${s||'Not Set'}</span>`;
+}
+function mriBadge(s){
+  if(s==='Completed') return `<span class="badge mri-done">✓ Done</span>`;
+  if(s==='Ordered - Pending') return `<span class="badge mri-pend">⏳ Pending</span>`;
+  return `<span class="badge mri-no">Not Ordered</span>`;
+}
+function todayBtns(p){
+  const s=p.today_status||'not_scheduled';
+  return [
+    {val:'scheduled',label:'Sched',cls:'sched'},
+    {val:'showed',label:'Showed',cls:'showed'},
+    {val:'no_show',label:'No Show',cls:'noshow'},
+  ].map(b=>`<button class="today-btn ${b.cls}${s===b.val?' act':''}" onclick="setToday('${p.id}','${b.val}')">${b.label}</button>`).join('');
+}
+function progBar(done, total){
+  if(!total) return `<span style="color:var(--muted2)">–</span>`;
+  const pct=Math.min(100,Math.round((done||0)/total*100));
+  return `<div class="prog-wrap"><div class="prog-bg"><div class="prog-fill" style="width:${pct}%"></div></div><span class="prog-txt">${done||0}/${total}</span></div>`;
+}
+
+function renderPatTable(){
+  const tbody=document.getElementById('patBody');
+  if(!patients.length){
+    tbody.innerHTML=`<tr><td colspan="12"><div class="empty-state"><div class="ei">📋</div><h3>No active patients</h3><p>Sync GHL or add manually</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML=patients.map(p=>{
+    const drop=(p.missed_appointments||0)>=2;
+    const overall=patientColor(p);
+    const barCls=overall||'none';
+    return `<tr style="border-left:4px solid ${overall==='green'?'#15803d':overall==='yellow'?'#a16207':overall==='red'?'#b91c1c':'#e5e7eb'}">
+      <td>
+        <div class="pat-name">${esc(p.name)}${drop?' <span class="dropout-flag">⚠ Risk</span>':''}</div>
+        <div class="pat-source">${p.source==='ghl'?'🔗 GHL':'✎ Manual'}</div>
+      </td>
+      <td style="text-align:center;font-weight:700;color:var(--blue)">${p.current_week!=null?'Wk '+p.current_week:'<span style="color:var(--muted2)">–</span>'}</td>
+      <td>${progBar(p.visits_completed,p.visits_prescribed)}</td>
+      ${MILESTONES.map(m=>`<td class="ms-cell">${msPill(p,m)}</td>`).join('')}
+      <td>${collBadge(p.collections_status)}</td>
+      <td>${mriBadge(p.mri_status)}</td>
+      <td><div class="today-wrap">${todayBtns(p)}</div></td>
+      <td><button class="icon-edit" onclick="openEditModal('${p.id}')">✎</button></td>
+    </tr>`;
+  }).join('');
+}
+
+async function setToday(id,status){
+  const p=patients.find(x=>x.id===id);
+  const ns=p&&p.today_status===status?'not_scheduled':status;
+  await patchPatient(id,{today_status:ns});
+}
+
+async function syncGHL(){
+  const btn=document.getElementById('syncBtn');
+  btn.textContent='⏳ Syncing…'; btn.disabled=true;
+  try{
+    const res=await fetch('/api/patients/sync',{method:'POST'});
+    const d=await res.json();
+    showToast(d.synced>0?`✓ ${d.synced} patient(s) imported`:'✓ GHL sync complete — no new patients','success');
+    await loadPatients();
+  }catch(e){showToast('GHL sync failed','error');}
+  finally{btn.textContent='⟳ Sync GHL';btn.disabled=false;}
+}
+
+async function resetToday(){
+  if(!confirm('Reset all attendance to "Not Scheduled"?')) return;
+  await fetch('/api/reset_today',{method:'POST'});
+  await loadPatients();
+  showToast('Attendance reset','success');
+}
+
+async function patchPatient(id,data){
+  const res=await fetch(`/api/patients/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const updated=await res.json();
+  const idx=patients.findIndex(p=>p.id===id);
+  if(idx!==-1) patients[idx]=updated;
+  renderClinical();
+}
+
+function openEditModal(id){
+  const p=patients.find(x=>x.id===id); if(!p) return;
+  document.getElementById('editPatientId').value=p.id;
+  document.getElementById('editModalTitle').textContent=p.name;
+  document.getElementById('editName').value=p.name||'';
+  document.getElementById('editPhone').value=p.phone||'';
+  document.getElementById('editStartDate').value=p.treatment_start_date||'';
+  document.getElementById('editWeek').value=p.current_week||'';
+  document.getElementById('editVisitsCompleted').value=p.visits_completed||'';
+  document.getElementById('editVisitsPrescribed').value=p.visits_prescribed||'';
+  document.getElementById('editCollections').value=p.collections_status||'Not Set';
+  document.getElementById('editMRI').value=p.mri_status||'Not Ordered';
+  document.getElementById('editMissed').value=p.missed_appointments||0;
+  document.getElementById('editNotes').value=p.notes||'';
+  document.getElementById('editV2').value=p.visit2_pct!=null?p.visit2_pct:'';
+  document.getElementById('editV5').value=p.visit5_pct!=null?p.visit5_pct:'';
+  document.getElementById('editV8').value=p.visit8_pct!=null?p.visit8_pct:'';
+  document.getElementById('editV12').value=p.visit12_pct!=null?p.visit12_pct:'';
+  document.getElementById('editV16').value=p.visit16_pct!=null?p.visit16_pct:'';
+  [['editV2',10],['editV5',15],['editV8',20],['editV12',33],['editV16',50]].forEach(([id,e])=>colorMI(document.getElementById(id),e));
+  openModal('editModal');
+}
+
+function colorMI(inp,exp){
+  inp.classList.remove('m-green','m-yellow','m-red');
+  if(!inp.value) return;
+  const c=msClass(parseFloat(inp.value),exp);
+  if(c!=='empty') inp.classList.add('m-'+c);
+}
+
+async function savePatient(){
+  const id=document.getElementById('editPatientId').value;
+  const data={
+    name:document.getElementById('editName').value.trim(),
+    phone:document.getElementById('editPhone').value.trim(),
+    treatment_start_date:document.getElementById('editStartDate').value||null,
+    current_week:parseInt(document.getElementById('editWeek').value)||null,
+    visits_completed:parseInt(document.getElementById('editVisitsCompleted').value)||null,
+    visits_prescribed:parseInt(document.getElementById('editVisitsPrescribed').value)||null,
+    collections_status:document.getElementById('editCollections').value,
+    mri_status:document.getElementById('editMRI').value,
+    missed_appointments:parseInt(document.getElementById('editMissed').value)||0,
+    notes:document.getElementById('editNotes').value.trim(),
+    visit2_pct:pFN(document.getElementById('editV2').value),
+    visit5_pct:pFN(document.getElementById('editV5').value),
+    visit8_pct:pFN(document.getElementById('editV8').value),
+    visit12_pct:pFN(document.getElementById('editV12').value),
+    visit16_pct:pFN(document.getElementById('editV16').value),
+  };
+  if(!data.name){showToast('Name required','error');return;}
+  await patchPatient(id,data);
+  closeModal('editModal');
+  showToast('Patient updated','success');
+}
+
+async function removePatient(){
+  const id=document.getElementById('editPatientId').value;
+  const name=document.getElementById('editName').value;
+  if(!confirm(`Remove ${name}?`)) return;
+  await fetch(`/api/patients/${id}`,{method:'DELETE'});
+  patients=patients.filter(p=>p.id!==id);
+  renderClinical(); closeModal('editModal');
+  showToast('Patient removed','success');
+}
+
+function openAddModal(){
+  ['addName','addPhone','addEmail'].forEach(id=>document.getElementById(id).value='');
+  openModal('addModal');
+  setTimeout(()=>document.getElementById('addName').focus(),100);
+}
+
+async function submitAddPatient(){
+  const name=document.getElementById('addName').value.trim();
+  if(!name){showToast('Name required','error');return;}
+  const res=await fetch('/api/patients',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name,phone:document.getElementById('addPhone').value.trim(),email:document.getElementById('addEmail').value.trim()})});
+  const p=await res.json();
+  patients.push(p); patients.sort((a,b)=>a.name.localeCompare(b.name));
+  renderClinical(); closeModal('addModal');
+  showToast(`${name} added`,'success');
+  setTimeout(()=>openEditModal(p.id),300);
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function pFN(v){if(v===''||v==null)return null;const f=parseFloat(v);return isNaN(f)?null:f;}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));});
+let toastT;
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`show ${type}`;
+  clearTimeout(toastT); toastT=setTimeout(()=>t.className='',3000);
+}
+
+// ── Instagram ─────────────────────────────────────────────────────────────────
+let igToken = localStorage.getItem('ig_token') || '';
+let igAccountId = localStorage.getItem('ig_account_id') || '';
+
+function showIGSetup(){
+  document.getElementById('igBanner').style.display='block';
+  document.getElementById('igTokenInput').focus();
+}
+
+async function connectIG(){
+  const token = document.getElementById('igTokenInput').value.trim();
+  const acct  = document.getElementById('igAccountInput').value.trim();
+  if(!token){showToast('Paste your access token first','error');return;}
+  igToken = token;
+  localStorage.setItem('ig_token', token);
+  if(acct){ igAccountId=acct; localStorage.setItem('ig_account_id',acct); }
+  showToast('Connecting to Instagram…','success');
+  await fetchIGData();
+}
+
+function fmtK(n){
+  if(!n) return '—';
+  if(n>=1000000) return (n/1000000).toFixed(1)+'M';
+  if(n>=1000) return (n/1000).toFixed(1)+'K';
+  return n.toLocaleString();
+}
+
+async function fetchIGData(){
+  if(!igToken){ return; }
+  try{
+    // Step 1: get account ID if not set
+    if(!igAccountId){
+      const meRes = await fetch(`https://graph.instagram.com/me?fields=id,username&access_token=${igToken}`);
+      const me = await meRes.json();
+      if(me.error){throw new Error(me.error.message);}
+      igAccountId = me.id;
+      localStorage.setItem('ig_account_id', igAccountId);
+    }
+
+    // Step 2: basic profile + follower count
+    const profileRes = await fetch(
+      `https://graph.instagram.com/${igAccountId}?fields=followers_count,follows_count,media_count,username&access_token=${igToken}`
+    );
+    const profile = await profileRes.json();
+    if(profile.error) throw new Error(profile.error.message);
+
+    document.getElementById('ig-followers').textContent = fmtK(profile.followers_count);
+    document.getElementById('ig-posts').textContent = fmtK(profile.media_count);
+
+    // Step 3: insights — reach & impressions (business accounts only)
+    try{
+      const insRes = await fetch(
+        `https://graph.instagram.com/${igAccountId}/insights?metric=reach,impressions,profile_views,website_clicks&period=days_28&access_token=${igToken}`
+      );
+      const ins = await insRes.json();
+      if(!ins.error && ins.data){
+        ins.data.forEach(d=>{
+          const v = d.values ? d.values.reduce((a,b)=>a+(b.value||0),0) : 0;
+          if(d.name==='reach')          document.getElementById('ig-reach').textContent=fmtK(v);
+          if(d.name==='impressions')    document.getElementById('ig-impressions').textContent=fmtK(v);
+          if(d.name==='profile_views')  document.getElementById('ig-profile-views').textContent=fmtK(v);
+          if(d.name==='website_clicks') document.getElementById('ig-website-clicks').textContent=fmtK(v);
+        });
+      }
+    }catch(e){}
+
+    // Step 4: recent media for avg likes/comments + thumbnails
+    const mediaRes = await fetch(
+      `https://graph.instagram.com/${igAccountId}/media?fields=id,media_type,thumbnail_url,media_url,like_count,comments_count,timestamp&limit=12&access_token=${igToken}`
+    );
+    const media = await mediaRes.json();
+    if(!media.error && media.data && media.data.length){
+      const posts = media.data;
+      const totalLikes    = posts.reduce((a,p)=>a+(p.like_count||0),0);
+      const totalComments = posts.reduce((a,p)=>a+(p.comments_count||0),0);
+      const count = posts.length;
+      document.getElementById('ig-avg-likes').textContent    = Math.round(totalLikes/count).toLocaleString();
+      document.getElementById('ig-avg-comments').textContent = Math.round(totalComments/count).toLocaleString();
+
+      // Engagement rate = (likes+comments) / followers * 100
+      if(profile.followers_count){
+        const engRate = ((totalLikes+totalComments)/count/profile.followers_count*100).toFixed(2);
+        document.getElementById('ig-engagement').textContent = engRate+'%';
+        const engEl = document.getElementById('ig-engagement-chg');
+        engEl.textContent = parseFloat(engRate)>=3 ? '✓ Good engagement' : 'Below 3% benchmark';
+        engEl.className = 'ig-kpi-change ' + (parseFloat(engRate)>=3?'up':'down');
+      }
+
+      // Thumbnails
+      const grid = document.getElementById('igPostsGrid');
+      grid.innerHTML = posts.slice(0,6).map(p=>{
+        const imgUrl = p.thumbnail_url || p.media_url || '';
+        return `<div class="ig-post-thumb">
+          ${imgUrl ? `<img src="${imgUrl}" alt="post">` : '<div class="ig-post-thumb-placeholder">📷</div>'}
+          <div class="ig-post-overlay">
+            ❤️ ${fmtK(p.like_count||0)} &nbsp; 💬 ${fmtK(p.comments_count||0)}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Update status
+    document.getElementById('igStatusDot').classList.add('live');
+    document.getElementById('igStatusText').textContent = `Connected as @${profile.username} · Last synced ${new Date().toLocaleTimeString()}`;
+    document.getElementById('igConnectBtn').textContent = '✓ Connected';
+    document.getElementById('igConnectBtn').classList.add('connected');
+    document.getElementById('igBanner').style.display='none';
+    showToast('Instagram connected!','success');
+
+  }catch(err){
+    showToast('Instagram error: '+err.message,'error');
+    console.error('IG error:',err);
+  }
+}
+
+// Auto-load if token saved
+if(igToken) fetchIGData();
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+Promise.all([
+  loadPatients(),
+  loadScorecard('leadership'),
+  loadScorecard('finance'),
+  loadDashboard(),
+]);
+setInterval(loadPatients, 5*60*1000);
+</script>
+</body>
+</html>
