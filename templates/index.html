@@ -264,8 +264,11 @@ body{font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:
 .sc-table th:first-child{min-width:160px;max-width:220px;border-right:1px solid var(--border)}
 .sc-table th.col-actuals{color:var(--text2)}
 .sc-table.view-monthly .col-weekly{display:none}
+.sc-table.view-monthly .col-daily-only{display:none}
 .sc-table.view-weekly .col-monthly-only{display:none}
+.sc-table.view-weekly .col-daily-only{display:none}
 .sc-table.view-daily .col-monthly-only{display:none}
+.sc-table.view-daily .col-weekly{display:none}
 .sc-table td{
   padding:0;border-bottom:1px solid var(--border2);
   border-right:1px solid var(--border2);vertical-align:middle;
@@ -804,9 +807,9 @@ textarea{resize:vertical;min-height:60px}
           <button class="sc-stab" onclick="filterScSection('FINANCE','leadership',this)">Finance</button>
         </div>
         <div class="sc-controls">
-          <button class="sc-nav-btn" onclick="shiftMonths('leadership',-1)">&#8592;</button>
-          <button class="sc-nav-btn" onclick="shiftMonths('leadership',1)">&#8594;</button>
-          <button class="sc-today" onclick="resetMonths('leadership')">TODAY</button>
+          <button class="sc-nav-btn" style="display:none" onclick="shiftMonths('leadership',-1)">&#8592;</button>
+          <button class="sc-nav-btn" style="display:none" onclick="shiftMonths('leadership',1)">&#8594;</button>
+          <button class="sc-today" style="display:none" onclick="resetMonths('leadership')">TODAY</button>
           <div class="sc-tabs">
             <button class="sc-tab" onclick="setSCView('monthly',this,'leadership')">MONTHLY</button>
             <button class="sc-tab active" onclick="setSCView('weekly',this,'leadership')">WEEKLY</button>
@@ -851,9 +854,9 @@ textarea{resize:vertical;min-height:60px}
       <!-- ══════════ FINANCE SCORECARD ══════════ -->
       <div id="page-finance" class="page">
         <div class="sc-controls">
-          <button class="sc-nav-btn" onclick="shiftMonths('finance',-1)">&#8592;</button>
-          <button class="sc-nav-btn" onclick="shiftMonths('finance',1)">&#8594;</button>
-          <button class="sc-today" onclick="resetMonths('finance')">TODAY</button>
+          <button class="sc-nav-btn" style="display:none" onclick="shiftMonths('finance',-1)">&#8592;</button>
+          <button class="sc-nav-btn" style="display:none" onclick="shiftMonths('finance',1)">&#8594;</button>
+          <button class="sc-today" style="display:none" onclick="resetMonths('finance')">TODAY</button>
           <div class="sc-tabs">
             <button class="sc-tab" onclick="setSCView('monthly',this,'finance')">MONTHLY</button>
             <button class="sc-tab active" onclick="setSCView('weekly',this,'finance')">WEEKLY</button>
@@ -897,9 +900,9 @@ textarea{resize:vertical;min-height:60px}
           <button class="sc-stab" onclick="filterScSection('GOOGLE BUSINESS PROFILE','marketing',this)">Google</button>
         </div>
         <div class="sc-controls">
-          <button class="sc-nav-btn" onclick="shiftMonths('marketing',-1)">&#8592;</button>
-          <button class="sc-nav-btn" onclick="shiftMonths('marketing',1)">&#8594;</button>
-          <button class="sc-today" onclick="resetMonths('marketing')">TODAY</button>
+          <button class="sc-nav-btn" style="display:none" onclick="shiftMonths('marketing',-1)">&#8592;</button>
+          <button class="sc-nav-btn" style="display:none" onclick="shiftMonths('marketing',1)">&#8594;</button>
+          <button class="sc-today" style="display:none" onclick="resetMonths('marketing')">TODAY</button>
           <div class="sc-tabs">
             <button class="sc-tab" onclick="setSCView('monthly',this,'marketing')">MONTHLY</button>
             <button class="sc-tab active" onclick="setSCView('weekly',this,'marketing')">WEEKLY</button>
@@ -941,9 +944,9 @@ textarea{resize:vertical;min-height:60px}
           <button class="sc-stab" onclick="filterScSection('STHEPHANNY SETTER METRICS','sales',this)">Sthephanny</button>
         </div>
         <div class="sc-controls">
-          <button class="sc-nav-btn" onclick="shiftMonths('sales',-1)">&#8592;</button>
-          <button class="sc-nav-btn" onclick="shiftMonths('sales',1)">&#8594;</button>
-          <button class="sc-today" onclick="resetMonths('sales')">TODAY</button>
+          <button class="sc-nav-btn" style="display:none" onclick="shiftMonths('sales',-1)">&#8592;</button>
+          <button class="sc-nav-btn" style="display:none" onclick="shiftMonths('sales',1)">&#8594;</button>
+          <button class="sc-today" style="display:none" onclick="resetMonths('sales')">TODAY</button>
           <div class="sc-tabs">
             <button class="sc-tab" onclick="setSCView('monthly',this,'sales')">MONTHLY</button>
             <button class="sc-tab active" onclick="setSCView('weekly',this,'sales')">WEEKLY</button>
@@ -1424,7 +1427,15 @@ function setSCView(view, btn, scName){
     table.classList.remove('view-monthly','view-weekly','view-daily');
     table.classList.add(`view-${view}`);
   }
-  if(view==='monthly') renderScorecard(scName);
+  // Show/hide month nav arrows + TODAY only in monthly view
+  const pageDiv = table ? table.closest('[id^="page-"]') : null;
+  if(pageDiv){
+    const isM = view === 'monthly';
+    pageDiv.querySelectorAll('.sc-nav-btn').forEach(b => b.style.display = isM ? '' : 'none');
+    const todayBtn = pageDiv.querySelector('.sc-today');
+    if(todayBtn) todayBtn.style.display = isM ? '' : 'none';
+  }
+  renderScorecard(scName);
 }
 
 // ── Format helpers ────────────────────────────────────────────────────────────
@@ -1478,9 +1489,29 @@ function renderScorecard(name){
   const tbody = document.getElementById(`sc-body-${name}`);
   if(!tbody) return;
 
-  const isMonthly = scViewMode[name]==='monthly';
+  const view = scViewMode[name] || 'weekly';
+  const isMonthly = view === 'monthly';
+  const isDaily   = view === 'daily';
+  const isWeekly  = view === 'weekly';
 
-  // Update table headers dynamically for monthly view
+  // ── Compute current week label for daily view ──────────────────────────────
+  function currentWeekLabel(){
+    const d = new Date();
+    const day = d.getDay(); // 0=Sun
+    const startOfWeek = new Date(d);
+    startOfWeek.setDate(d.getDate() - (day === 0 ? 6 : day - 1)); // Mon
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    const mo = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    return `${mo[startOfWeek.getMonth()]} ${startOfWeek.getDate()}–${endOfWeek.getDate()}`;
+  }
+
+  // ── Current month label for weekly/daily ──────────────────────────────────
+  const now = new Date();
+  const curYM = currentYearMonth();
+  const curMonLabel = fmtYM(curYM); // e.g. "MAY 2026"
+
+  // Update table headers
   const thead = tbody.closest('table').querySelector('thead tr');
   if(isMonthly){
     const months = getVisibleMonths(name, 4);
@@ -1490,17 +1521,22 @@ function renderScorecard(name){
       thHtml += `<th class="col-monthly-goal" style="text-align:right">${fmtYM(ym)}<br><span style="font-weight:400">GOALS</span></th>`;
     });
     thead.innerHTML = thHtml;
-  } else {
-    thead.innerHTML = `<tr>
+  } else if(isDaily){
+    thead.innerHTML = `
       <th>METRIC</th>
-      <th class="col-actuals col-monthly-only">APR 2026<br><span style="font-weight:400;color:var(--muted)">ACTUALS</span></th>
-      <th>APR 2026<br><span style="font-weight:400">GOALS</span></th>
-      <th class="col-weekly">W18<br><span style="font-weight:400">MAY 1–3</span></th>
-      <th class="col-weekly">W19<br><span style="font-weight:400">MAY 4–10</span></th>
-      <th class="col-weekly">W20<br><span style="font-weight:400">MAY 11–17</span></th>
-      <th class="col-weekly">W21<br><span style="font-weight:400">MAY 18–24</span></th>
-      <th class="col-weekly">W22<br><span style="font-weight:400">MAY 25–31</span></th>
-    </tr>`.replace('<tr>','').replace('</tr>','');
+      <th class="col-daily-only" style="text-align:right">THIS WEEK<br><span style="font-weight:400;color:var(--muted)">${currentWeekLabel()}</span></th>
+      <th style="text-align:right">${curMonLabel}<br><span style="font-weight:400">GOAL</span></th>`;
+  } else {
+    // Weekly view — show monthly actuals + goal + 5 weekly cols
+    thead.innerHTML = `
+      <th>METRIC</th>
+      <th class="col-monthly-only" style="text-align:right">${curMonLabel}<br><span style="font-weight:400;color:var(--muted)">ACTUALS</span></th>
+      <th style="text-align:right">${curMonLabel}<br><span style="font-weight:400">GOAL</span></th>
+      <th class="col-weekly" style="text-align:right">W18<br><span style="font-weight:400;color:var(--muted)">MAY 1–3</span></th>
+      <th class="col-weekly" style="text-align:right">W19<br><span style="font-weight:400;color:var(--muted)">MAY 4–10</span></th>
+      <th class="col-weekly" style="text-align:right">W20<br><span style="font-weight:400;color:var(--muted)">MAY 11–17</span></th>
+      <th class="col-weekly" style="text-align:right">W21<br><span style="font-weight:400;color:var(--muted)">MAY 18–24</span></th>
+      <th class="col-weekly" style="text-align:right">W22<br><span style="font-weight:400;color:var(--muted)">MAY 25–31</span></th>`;
   }
 
   // Group by section
@@ -1511,7 +1547,8 @@ function renderScorecard(name){
   });
 
   let html='';
-  const totalCols = isMonthly ? 1 + 4*2 : 8;
+  const totalCols = isMonthly ? 1 + 4*2 : isDaily ? 3 : 8;
+
   Object.entries(sections).forEach(([section, metrics])=>{
     html += `<tr class="sc-section-row" data-section="${section}">
       <td colspan="${totalCols}">
@@ -1547,7 +1584,29 @@ function renderScorecard(name){
             ${goalDisp ? `<span class="sc-display">${goalDisp}</span>` : ''}
           </td>`;
         }).join('');
+
+      } else if(isDaily){
+        // Daily view: show this week actuals + monthly goal
+        // Pull current month's monthly_data for actuals reference
+        const md = m.monthly_data ? (typeof m.monthly_data==='string' ? JSON.parse(m.monthly_data) : m.monthly_data) : {};
+        const curEntry = md[curYM] || {};
+        const act = curEntry.actuals || m.actuals || '';
+        const goal = curEntry.goals || m.goals || '';
+        const actDisp = fmtVal(act, m.unit);
+        const goalDisp = fmtVal(goal, m.unit);
+        let actClass = '';
+        if(isPct && act && goal) actClass = pctColor(act,goal);
+        else if(!isPct && act) actClass = valClass(act, goal, 'actuals');
+        cellsHtml = `
+          <td class="sc-cell ${actClass} col-daily-only" style="text-align:right" onclick="startMonthlyEdit(this,${m.id},'${curYM}','actuals','${name}')">
+            ${actDisp ? `<span class="sc-display">${actDisp}</span>` : ''}
+          </td>
+          <td class="sc-cell val-black" style="text-align:right" onclick="startMonthlyEdit(this,${m.id},'${curYM}','goals','${name}')">
+            ${goalDisp ? `<span class="sc-display">${goalDisp}</span>` : ''}
+          </td>`;
+
       } else {
+        // Weekly view
         const cols = ['actuals','goals','w18','w19','w20','w21','w22'];
         const colGoals = m.goals;
         const colClass = c => c==='actuals' ? 'col-monthly-only' : ['w18','w19','w20','w21','w22'].includes(c) ? 'col-weekly' : '';
@@ -1557,11 +1616,11 @@ function renderScorecard(name){
           const isEmpty = !display;
           const extra = colClass(col);
           if(isPct){
-            if(col === 'goals') return `<td class="sc-cell val-black ${extra}" onclick="startCellEdit(this,${m.id},'${col}','${name}')">${isEmpty ? '' : `<span class="sc-display">${display}</span>`}</td>`;
-            return `<td class="sc-cell ${extra}" style="text-align:center" onclick="startCellEdit(this,${m.id},'${col}','${name}')">${isEmpty ? `<span class="ms-pill empty">–</span>` : renderPctPill(v, m.goals)}</td>`;
+            if(col === 'goals') return `<td class="sc-cell val-black ${extra}" style="text-align:right" onclick="startCellEdit(this,${m.id},'${col}','${name}')">${isEmpty ? '' : `<span class="sc-display">${display}</span>`}</td>`;
+            return `<td class="sc-cell ${extra}" style="text-align:right" onclick="startCellEdit(this,${m.id},'${col}','${name}')">${isEmpty ? `<span class="ms-pill empty">–</span>` : renderPctPill(v, m.goals)}</td>`;
           }
           const cls = valClass(v, colGoals, col);
-          return `<td class="sc-cell ${cls} ${extra}" onclick="startCellEdit(this,${m.id},'${col}','${name}')">${isEmpty ? '' : `<span class="sc-display">${display}</span>`}</td>`;
+          return `<td class="sc-cell ${cls} ${extra}" style="text-align:right" onclick="startCellEdit(this,${m.id},'${col}','${name}')">${isEmpty ? '' : `<span class="sc-display">${display}</span>`}</td>`;
         }).join('');
       }
 
